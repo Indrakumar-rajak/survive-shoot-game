@@ -1,0 +1,2225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+<title>60 Seconds - Survive & Shoot</title>
+
+<style>
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    -webkit-tap-highlight-color: transparent;
+}
+
+html,
+body {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
+body {
+    background: #050816;
+    color: white;
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#gameWrap {
+    width: min(100vw, 1000px);
+    aspect-ratio: 1000 / 650;
+    position: relative;
+    overflow: hidden;
+    background: #071126;
+    border: 2px solid #183b6b;
+    border-radius: 12px;
+}
+
+canvas {
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+#hud {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    right: 10px;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+
+    z-index: 5;
+    pointer-events: none;
+}
+
+.box {
+    background: rgba(0, 10, 30, 0.82);
+    border: 1px solid #28527e;
+    border-radius: 8px;
+    padding: 7px 10px;
+    font-size: 13px;
+    line-height: 1.45;
+}
+
+#timer {
+    font-size: 20px;
+    font-weight: bold;
+    color: #66d9ff;
+}
+
+#lives {
+    color: #ff6677;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+#power {
+    color: #55d9ff;
+    font-weight: bold;
+}
+
+#combo {
+    color: #ffd45a;
+    font-weight: bold;
+}
+
+#shieldText {
+    color: #72eaff;
+    font-weight: bold;
+}
+
+#status {
+    position: absolute;
+    top: 92px;
+    left: 50%;
+
+    transform: translateX(-50%);
+
+    color: #70e6ff;
+    font-size: 15px;
+    font-weight: bold;
+
+    opacity: 0;
+    transition: opacity 0.2s;
+
+    z-index: 7;
+    pointer-events: none;
+    white-space: nowrap;
+}
+
+#controls {
+    position: absolute;
+    bottom: 12px;
+    left: 12px;
+    right: 12px;
+
+    display: flex;
+    justify-content: space-between;
+
+    z-index: 6;
+    pointer-events: none;
+}
+
+.control {
+    width: 75px;
+    height: 55px;
+
+    border: 1px solid rgba(100, 190, 255, 0.5);
+    background: rgba(5, 20, 45, 0.75);
+
+    color: white;
+    border-radius: 12px;
+
+    font-size: 24px;
+    font-weight: bold;
+
+    pointer-events: auto;
+    user-select: none;
+    touch-action: none;
+}
+
+.control:active {
+    transform: scale(0.94);
+}
+
+#overlay {
+    position: absolute;
+    inset: 0;
+
+    background: rgba(1, 5, 18, 0.86);
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    text-align: center;
+
+    z-index: 10;
+}
+
+.panel {
+    width: min(88%, 460px);
+
+    padding: 25px;
+
+    background: rgba(5, 16, 38, 0.97);
+    border: 1px solid #2d6da5;
+    border-radius: 15px;
+
+    box-shadow: 0 0 35px rgba(40, 150, 255, 0.15);
+}
+
+.panel h1 {
+    font-size: 30px;
+    margin-bottom: 12px;
+    color: #67dfff;
+}
+
+.panel p {
+    color: #b9cce0;
+    font-size: 14px;
+    line-height: 1.6;
+    margin-bottom: 20px;
+}
+
+#startBtn {
+    border: none;
+    border-radius: 9px;
+
+    padding: 12px 26px;
+
+    background: #1688d8;
+    color: white;
+
+    font-size: 16px;
+    font-weight: bold;
+
+    cursor: pointer;
+}
+
+#startBtn:active {
+    transform: scale(0.96);
+}
+
+@media (max-width: 600px) {
+
+    #gameWrap {
+        width: 100vw;
+        border-radius: 0;
+        border-width: 1px;
+    }
+
+    .box {
+        padding: 5px 7px;
+        font-size: 10px;
+    }
+
+    #timer {
+        font-size: 16px;
+    }
+
+    #lives {
+        font-size: 13px;
+    }
+
+    .control {
+        width: 62px;
+        height: 48px;
+    }
+
+    .panel h1 {
+        font-size: 24px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div id="gameWrap">
+
+    <canvas id="game" width="1000" height="650"></canvas>
+
+    <!-- HUD -->
+    <div id="hud">
+
+        <div class="box">
+            SCORE: <b id="score">0</b><br>
+            BEST: <b id="best">0</b>
+        </div>
+
+        <div class="box" style="text-align:center;">
+            <div id="timer">60</div>
+            <div id="combo">COMBO x0</div>
+        </div>
+
+        <div class="box" style="text-align:right;">
+            <div id="lives">❤️ ❤️ ❤️</div>
+            <div id="power">POWER: 1 BULLET</div>
+            <div id="shieldText">SHIELD: OFF</div>
+        </div>
+
+    </div>
+
+    <div id="status"></div>
+
+    <!-- Mobile Controls -->
+    <div id="controls">
+        <button class="control" id="leftBtn">◀</button>
+        <button class="control" id="rightBtn">▶</button>
+    </div>
+
+    <!-- Start / Game Over -->
+    <div id="overlay">
+
+        <div class="panel">
+
+            <h1 id="title">60 SECONDS</h1>
+
+            <p id="message">
+                Numbered red hurdles ko shoot karo.<br>
+                Number jitna hoga, utne hits lagenge.<br><br>
+
+                🔵 Blue Power = Extra Bullets<br>
+                🛡️ Shield = Temporary Protection<br>
+                ❤️ 3 Lives Available
+            </p>
+
+            <button id="startBtn">
+                START GAME
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+
+/* =========================================================
+   GAME SETUP
+========================================================= */
+
+const canvas = document.getElementById("game");
+const ctx = canvas.getContext("2d");
+
+const W = canvas.width;
+const H = canvas.height;
+
+
+/* =========================================================
+   HUD ELEMENTS
+========================================================= */
+
+const scoreEl = document.getElementById("score");
+const bestEl = document.getElementById("best");
+const timerEl = document.getElementById("timer");
+const livesEl = document.getElementById("lives");
+const powerEl = document.getElementById("power");
+const comboEl = document.getElementById("combo");
+const shieldText = document.getElementById("shieldText");
+
+const overlay = document.getElementById("overlay");
+const title = document.getElementById("title");
+const message = document.getElementById("message");
+const startBtn = document.getElementById("startBtn");
+const statusEl = document.getElementById("status");
+
+
+/* =========================================================
+   GAME VARIABLES
+========================================================= */
+
+let gameRunning = false;
+
+let score = 0;
+let timeLeft = 60;
+let lives = 3;
+
+let best = Number(
+    localStorage.getItem("surviveShootBest") || 0
+);
+
+let bulletsPower = 1;
+let powerTime = 0;
+
+let shieldTime = 0;
+
+let combo = 0;
+let comboTimer = 0;
+
+let spawnTimer = 0;
+let shootTimer = 0;
+
+let lastTime = 0;
+
+
+/* =========================================================
+   ARRAYS
+========================================================= */
+
+let obstacles = [];
+let bullets = [];
+let powers = [];
+let particles = [];
+
+
+/* =========================================================
+   CONTROLS
+========================================================= */
+
+let leftPressed = false;
+let rightPressed = false;
+
+
+/* =========================================================
+   PLAYER
+========================================================= */
+
+const player = {
+
+    x: W / 2,
+
+    y: H - 75,
+
+    w: 34,
+
+    h: 42,
+
+    speed: 470
+};
+
+
+/* =========================================================
+   INITIAL HUD
+========================================================= */
+
+bestEl.textContent = best;
+
+
+/* =========================================================
+   KEYBOARD
+========================================================= */
+
+document.addEventListener("keydown", function(e) {
+
+    if (
+        e.key === "ArrowLeft" ||
+        e.key.toLowerCase() === "a"
+    ) {
+        leftPressed = true;
+    }
+
+    if (
+        e.key === "ArrowRight" ||
+        e.key.toLowerCase() === "d"
+    ) {
+        rightPressed = true;
+    }
+
+    if (
+        e.code === "Space" &&
+        !gameRunning
+    ) {
+        startGame();
+    }
+});
+
+
+document.addEventListener("keyup", function(e) {
+
+    if (
+        e.key === "ArrowLeft" ||
+        e.key.toLowerCase() === "a"
+    ) {
+        leftPressed = false;
+    }
+
+    if (
+        e.key === "ArrowRight" ||
+        e.key.toLowerCase() === "d"
+    ) {
+        rightPressed = false;
+    }
+});
+
+
+/* =========================================================
+   MOBILE CONTROLS
+========================================================= */
+
+function setupButton(button, direction) {
+
+    function press(e) {
+
+        e.preventDefault();
+
+        if (direction === "left") {
+            leftPressed = true;
+        }
+
+        if (direction === "right") {
+            rightPressed = true;
+        }
+    }
+
+
+    function release(e) {
+
+        e.preventDefault();
+
+        if (direction === "left") {
+            leftPressed = false;
+        }
+
+        if (direction === "right") {
+            rightPressed = false;
+        }
+    }
+
+
+    button.addEventListener(
+        "touchstart",
+        press,
+        { passive: false }
+    );
+
+    button.addEventListener(
+        "touchend",
+        release,
+        { passive: false }
+    );
+
+    button.addEventListener(
+        "touchcancel",
+        release,
+        { passive: false }
+    );
+
+    button.addEventListener(
+        "mousedown",
+        press
+    );
+
+    button.addEventListener(
+        "mouseup",
+        release
+    );
+
+    button.addEventListener(
+        "mouseleave",
+        release
+    );
+}
+
+
+setupButton(
+    document.getElementById("leftBtn"),
+    "left"
+);
+
+setupButton(
+    document.getElementById("rightBtn"),
+    "right"
+);
+
+
+/* =========================================================
+   START BUTTON
+========================================================= */
+
+startBtn.addEventListener(
+    "click",
+    startGame
+);
+
+
+/* =========================================================
+   START GAME
+========================================================= */
+
+function startGame() {
+
+    score = 0;
+
+    timeLeft = 60;
+
+    lives = 3;
+
+    bulletsPower = 1;
+
+    powerTime = 0;
+
+    shieldTime = 0;
+
+    combo = 0;
+
+    comboTimer = 0;
+
+    spawnTimer = 0.3;
+
+    shootTimer = 0.2;
+
+    obstacles = [];
+
+    bullets = [];
+
+    powers = [];
+
+    particles = [];
+
+    player.x = W / 2;
+
+    gameRunning = true;
+
+    overlay.style.display = "none";
+
+    updateHUD();
+
+    lastTime = performance.now();
+
+    requestAnimationFrame(gameLoop);
+}
+
+
+/* =========================================================
+   GAME LOOP
+========================================================= */
+
+function gameLoop(now) {
+
+    if (!gameRunning) {
+        return;
+    }
+
+    let dt =
+        (now - lastTime) / 1000;
+
+    lastTime = now;
+
+    if (dt > 0.035) {
+        dt = 0.035;
+    }
+
+    update(dt);
+
+    draw();
+
+    requestAnimationFrame(gameLoop);
+}
+
+
+/* =========================================================
+   UPDATE
+========================================================= */
+
+function update(dt) {
+
+    timeLeft -= dt;
+
+    if (timeLeft <= 0) {
+
+        timeLeft = 0;
+
+        winGame();
+
+        return;
+    }
+
+
+    /* PLAYER MOVEMENT */
+
+    if (leftPressed) {
+
+        player.x -=
+            player.speed * dt;
+    }
+
+
+    if (rightPressed) {
+
+        player.x +=
+            player.speed * dt;
+    }
+
+
+    player.x = Math.max(
+        player.w,
+        Math.min(
+            W - player.w,
+            player.x
+        )
+    );
+
+
+    /* POWER TIMER */
+
+    if (powerTime > 0) {
+
+        powerTime -= dt;
+
+        if (powerTime <= 0) {
+
+            powerTime = 0;
+
+            bulletsPower = 1;
+
+            showStatus(
+                "POWER OVER"
+            );
+        }
+    }
+
+
+    /* SHIELD TIMER */
+
+    if (shieldTime > 0) {
+
+        shieldTime -= dt;
+
+        if (shieldTime < 0) {
+            shieldTime = 0;
+        }
+    }
+
+
+    /* COMBO TIMER */
+
+    if (comboTimer > 0) {
+
+        comboTimer -= dt;
+
+        if (comboTimer <= 0) {
+
+            comboTimer = 0;
+
+            combo = 0;
+        }
+    }
+
+
+    /* SHOOTING */
+
+    shootTimer -= dt;
+
+    if (shootTimer <= 0) {
+
+        shoot();
+
+        if (bulletsPower >= 4) {
+
+            shootTimer = 0.23;
+
+        } else if (bulletsPower === 3) {
+
+            shootTimer = 0.27;
+
+        } else if (bulletsPower === 2) {
+
+            shootTimer = 0.30;
+
+        } else {
+
+            shootTimer = 0.34;
+        }
+    }
+
+
+    /* OBSTACLE SPAWN */
+
+    spawnTimer -= dt;
+
+    if (spawnTimer <= 0) {
+
+        spawnObstacle();
+
+        const elapsed =
+            60 - timeLeft;
+
+        const difficulty =
+            Math.min(
+                0.45,
+                elapsed * 0.006
+            );
+
+        spawnTimer =
+            Math.max(
+                0.25,
+                0.72 - difficulty
+            );
+    }
+
+
+    /* OBJECT UPDATES */
+
+    updateBullets(dt);
+
+    updateObstacles(dt);
+
+    updatePowers(dt);
+
+    updateParticles(dt);
+
+
+    /* COLLISIONS */
+
+    checkPowerCollision();
+
+    checkObstacleCollision();
+
+
+    updateHUD();
+}
+
+
+/* =========================================================
+   SHOOT
+========================================================= */
+
+function shoot() {
+
+    if (bulletsPower === 1) {
+
+        bullets.push({
+
+            x: player.x,
+
+            y: player.y - 22,
+
+            vx: 0,
+
+            vy: -720
+        });
+
+        return;
+    }
+
+
+    let spread;
+
+    if (bulletsPower === 2) {
+
+        spread = 70;
+
+    } else if (bulletsPower === 3) {
+
+        spread = 90;
+
+    } else {
+
+        spread = 105;
+    }
+
+
+    const count = bulletsPower;
+
+    for (
+        let i = 0;
+        i < count;
+        i++
+    ) {
+
+        const center =
+            (count - 1) / 2;
+
+        const vx =
+            (i - center) * spread;
+
+
+        bullets.push({
+
+            x: player.x,
+
+            y: player.y - 22,
+
+            vx: vx,
+
+            vy: -720
+        });
+    }
+}
+
+
+/* =========================================================
+   SPAWN OBSTACLE
+========================================================= */
+
+function spawnObstacle() {
+
+    const elapsed =
+        60 - timeLeft;
+
+
+    let difficulty =
+        Math.floor(
+            elapsed / 15
+        );
+
+
+    difficulty =
+        Math.min(
+            3,
+            difficulty
+        );
+
+
+    const hits =
+        1 +
+        Math.floor(
+            Math.random() *
+            (2 + difficulty)
+        );
+
+
+    const size =
+        25 +
+        Math.random() * 10;
+
+
+    obstacles.push({
+
+        x:
+            size +
+            Math.random() *
+            (W - size * 2),
+
+        y:
+            -size,
+
+        size:
+            size,
+
+        hits:
+            hits,
+
+        maxHits:
+            hits,
+
+        speed:
+            145 +
+            Math.random() * 70 +
+            difficulty * 35,
+
+        rotation:
+            Math.random() * Math.PI
+    });
+}
+
+
+/* =========================================================
+   UPDATE OBSTACLES
+   THIS WAS THE MISSING FUNCTION
+========================================================= */
+
+function updateObstacles(dt) {
+
+    for (
+        let i = obstacles.length - 1;
+        i >= 0;
+        i--
+    ) {
+
+        const o = obstacles[i];
+
+
+        o.y +=
+            o.speed * dt;
+
+
+        o.rotation +=
+            0.5 * dt;
+
+
+        /* Remove if it completely leaves screen */
+
+        if (
+            o.y >
+            H + o.size
+        ) {
+
+            obstacles.splice(i, 1);
+
+            combo = 0;
+
+            comboTimer = 0;
+        }
+    }
+}
+
+
+/* =========================================================
+   UPDATE BULLETS
+========================================================= */
+
+function updateBullets(dt) {
+
+    for (
+        let i = bullets.length - 1;
+        i >= 0;
+        i--
+    ) {
+
+        const b = bullets[i];
+
+
+        b.x +=
+            b.vx * dt;
+
+        b.y +=
+            b.vy * dt;
+
+
+        let hitSomething = false;
+
+
+        /* Bullet vs obstacle */
+
+        for (
+            let j = obstacles.length - 1;
+            j >= 0;
+            j--
+        ) {
+
+            const o = obstacles[j];
+
+
+            const dx =
+                b.x - o.x;
+
+            const dy =
+                b.y - o.y;
+
+
+            const distance =
+                Math.sqrt(
+                    dx * dx +
+                    dy * dy
+                );
+
+
+            if (
+                distance <
+                o.size
+            ) {
+
+                o.hits--;
+
+
+                createParticles(
+                    b.x,
+                    b.y,
+                    5
+                );
+
+
+                bullets.splice(i, 1);
+
+                hitSomething = true;
+
+
+                if (
+                    o.hits <= 0
+                ) {
+
+                    destroyObstacle(j);
+
+                } else {
+
+                    showStatus(
+                        "HIT! " +
+                        o.hits +
+                        " LEFT"
+                    );
+                }
+
+
+                break;
+            }
+        }
+
+
+        if (hitSomething) {
+            continue;
+        }
+
+
+        /* Remove bullet */
+
+        if (
+            b.y < -40 ||
+            b.x < -60 ||
+            b.x > W + 60
+        ) {
+
+            bullets.splice(i, 1);
+        }
+    }
+}
+
+
+/* =========================================================
+   DESTROY OBSTACLE
+========================================================= */
+
+function destroyObstacle(index) {
+
+    const o =
+        obstacles[index];
+
+
+    let bonus = 100;
+
+
+    combo++;
+
+    comboTimer = 2.5;
+
+
+    if (combo >= 3) {
+
+        bonus +=
+            combo * 20;
+    }
+
+
+    score += bonus;
+
+
+    createParticles(
+        o.x,
+        o.y,
+        18
+    );
+
+
+    /* Chance of power */
+
+    if (
+        Math.random() < 0.18
+    ) {
+
+        powers.push({
+
+            x: o.x,
+
+            y: o.y,
+
+            size: 14,
+
+            vy: 90,
+
+            type:
+                Math.random() < 0.72
+                ? "bullet"
+                : "shield"
+        });
+    }
+
+
+    obstacles.splice(
+        index,
+        1
+    );
+
+
+    if (combo >= 3) {
+
+        showStatus(
+            "COMBO x" +
+            combo +
+            "  +" +
+            bonus
+        );
+    }
+}
+
+
+/* =========================================================
+   UPDATE POWERS
+========================================================= */
+
+function updatePowers(dt) {
+
+    for (
+        let i = powers.length - 1;
+        i >= 0;
+        i--
+    ) {
+
+        const p = powers[i];
+
+
+        p.y +=
+            p.vy * dt;
+
+
+        if (
+            p.y >
+            H + 30
+        ) {
+
+            powers.splice(i, 1);
+        }
+    }
+}
+
+
+/* =========================================================
+   POWER COLLISION
+========================================================= */
+
+function checkPowerCollision() {
+
+    for (
+        let i = powers.length - 1;
+        i >= 0;
+        i--
+    ) {
+
+        const p =
+            powers[i];
+
+
+        const dx =
+            p.x - player.x;
+
+        const dy =
+            p.y - player.y;
+
+
+        const distance =
+            Math.sqrt(
+                dx * dx +
+                dy * dy
+            );
+
+
+        if (
+            distance < 42
+        ) {
+
+            if (
+                p.type === "bullet"
+            ) {
+
+                bulletsPower =
+                    Math.min(
+                        4,
+                        bulletsPower + 1
+                    );
+
+
+                powerTime = 10;
+
+
+                showStatus(
+                    "⚡ POWER " +
+                    bulletsPower +
+                    " BULLETS"
+                );
+
+            } else {
+
+                shieldTime = 6;
+
+
+                showStatus(
+                    "🛡️ SHIELD ACTIVE"
+                );
+            }
+
+
+            createParticles(
+                p.x,
+                p.y,
+                15
+            );
+
+
+            powers.splice(i, 1);
+        }
+    }
+}
+
+
+/* =========================================================
+   OBSTACLE COLLISION
+========================================================= */
+
+function checkObstacleCollision() {
+
+    for (
+        let i = obstacles.length - 1;
+        i >= 0;
+        i--
+    ) {
+
+        const o =
+            obstacles[i];
+
+
+        const dx =
+            o.x - player.x;
+
+        const dy =
+            o.y - player.y;
+
+
+        const distance =
+            Math.sqrt(
+                dx * dx +
+                dy * dy
+            );
+
+
+        if (
+            distance <
+            o.size + 22
+        ) {
+
+            /* Shield */
+
+            if (
+                shieldTime > 0
+            ) {
+
+                createParticles(
+                    o.x,
+                    o.y,
+                    25
+                );
+
+
+                obstacles.splice(
+                    i,
+                    1
+                );
+
+
+                score += 50;
+
+
+                showStatus(
+                    "🛡️ BLOCKED!"
+                );
+
+            } else {
+
+                loseLife(i);
+            }
+        }
+    }
+}
+
+
+/* =========================================================
+   LOSE LIFE
+========================================================= */
+
+function loseLife(index) {
+
+    lives--;
+
+
+    combo = 0;
+
+    comboTimer = 0;
+
+
+    createParticles(
+        player.x,
+        player.y,
+        22
+    );
+
+
+    obstacles.splice(
+        index,
+        1
+    );
+
+
+    if (lives <= 0) {
+
+        endGame();
+
+    } else {
+
+        showStatus(
+            "⚠️ LIFE LOST"
+        );
+    }
+}
+
+
+/* =========================================================
+   PARTICLES
+========================================================= */
+
+function createParticles(
+    x,
+    y,
+    count
+) {
+
+    for (
+        let i = 0;
+        i < count;
+        i++
+    ) {
+
+        const angle =
+            Math.random() *
+            Math.PI * 2;
+
+
+        const speed =
+            60 +
+            Math.random() * 220;
+
+
+        particles.push({
+
+            x: x,
+
+            y: y,
+
+            vx:
+                Math.cos(angle) *
+                speed,
+
+            vy:
+                Math.sin(angle) *
+                speed,
+
+            life:
+                0.35 +
+                Math.random() *
+                0.45,
+
+            maxLife:
+                0.8
+        });
+    }
+}
+
+
+/* =========================================================
+   UPDATE PARTICLES
+========================================================= */
+
+function updateParticles(dt) {
+
+    for (
+        let i = particles.length - 1;
+        i >= 0;
+        i--
+    ) {
+
+        const p =
+            particles[i];
+
+
+        p.x +=
+            p.vx * dt;
+
+        p.y +=
+            p.vy * dt;
+
+
+        p.life -= dt;
+
+
+        if (
+            p.life <= 0
+        ) {
+
+            particles.splice(
+                i,
+                1
+            );
+        }
+    }
+}
+
+
+/* =========================================================
+   DRAW
+========================================================= */
+
+function draw() {
+
+    ctx.clearRect(
+        0,
+        0,
+        W,
+        H
+    );
+
+
+    drawBackground();
+
+    drawPowers();
+
+    drawObstacles();
+
+    drawBullets();
+
+    drawPlayer();
+
+    drawParticles();
+}
+
+
+/* =========================================================
+   BACKGROUND
+========================================================= */
+
+function drawBackground() {
+
+    const gradient =
+        ctx.createLinearGradient(
+            0,
+            0,
+            0,
+            H
+        );
+
+
+    gradient.addColorStop(
+        0,
+        "#050a20"
+    );
+
+    gradient.addColorStop(
+        1,
+        "#091a32"
+    );
+
+
+    ctx.fillStyle =
+        gradient;
+
+    ctx.fillRect(
+        0,
+        0,
+        W,
+        H
+    );
+
+
+    /* Stars */
+
+    ctx.fillStyle =
+        "rgba(130,210,255,0.5)";
+
+
+    const starMove =
+        (performance.now() / 35) % H;
+
+
+    for (
+        let i = 0;
+        i < 80;
+        i++
+    ) {
+
+        const x =
+            (i * 137) % W;
+
+
+        const y =
+            (
+                i * 83 +
+                starMove
+            ) % H;
+
+
+        ctx.fillRect(
+            x,
+            y,
+            2,
+            2
+        );
+    }
+
+
+    /* Grid */
+
+    ctx.strokeStyle =
+        "rgba(50,150,220,0.12)";
+
+    ctx.lineWidth = 1;
+
+
+    for (
+        let x = 0;
+        x < W;
+        x += 50
+    ) {
+
+        ctx.beginPath();
+
+        ctx.moveTo(
+            x,
+            0
+        );
+
+        ctx.lineTo(
+            x,
+            H
+        );
+
+        ctx.stroke();
+    }
+
+
+    for (
+        let y = 0;
+        y < H;
+        y += 50
+    ) {
+
+        ctx.beginPath();
+
+        ctx.moveTo(
+            0,
+            y
+        );
+
+        ctx.lineTo(
+            W,
+            y
+        );
+
+        ctx.stroke();
+    }
+}
+
+
+/* =========================================================
+   DRAW PLAYER
+========================================================= */
+
+function drawPlayer() {
+
+    ctx.save();
+
+
+    ctx.translate(
+        player.x,
+        player.y
+    );
+
+
+    /* Shield */
+
+    if (
+        shieldTime > 0
+    ) {
+
+        ctx.beginPath();
+
+        ctx.arc(
+            0,
+            0,
+            36,
+            0,
+            Math.PI * 2
+        );
+
+
+        ctx.fillStyle =
+            "rgba(60,210,255,0.08)";
+
+        ctx.fill();
+
+
+        ctx.strokeStyle =
+            "rgba(80,220,255,0.95)";
+
+        ctx.lineWidth = 3;
+
+        ctx.stroke();
+    }
+
+
+    /* Ship */
+
+    ctx.beginPath();
+
+    ctx.moveTo(
+        0,
+        -24
+    );
+
+    ctx.lineTo(
+        -19,
+        20
+    );
+
+    ctx.lineTo(
+        0,
+        12
+    );
+
+    ctx.lineTo(
+        19,
+        20
+    );
+
+    ctx.closePath();
+
+
+    ctx.fillStyle =
+        "#58d9ff";
+
+    ctx.fill();
+
+
+    ctx.strokeStyle =
+        "#d5f7ff";
+
+    ctx.lineWidth = 2;
+
+    ctx.stroke();
+
+
+    /* Engine */
+
+    ctx.beginPath();
+
+    ctx.moveTo(
+        -7,
+        17
+    );
+
+    ctx.lineTo(
+        0,
+        31 +
+        Math.random() * 7
+    );
+
+    ctx.lineTo(
+        7,
+        17
+    );
+
+    ctx.closePath();
+
+
+    ctx.fillStyle =
+        "#65bfff";
+
+    ctx.fill();
+
+
+    ctx.restore();
+}
+
+
+/* =========================================================
+   DRAW BULLETS
+========================================================= */
+
+function drawBullets() {
+
+    for (
+        const b of bullets
+    ) {
+
+        ctx.beginPath();
+
+
+        ctx.moveTo(
+            b.x,
+            b.y
+        );
+
+
+        ctx.lineTo(
+            b.x -
+            b.vx * 0.018,
+            b.y + 14
+        );
+
+
+        ctx.strokeStyle =
+            "#b8f4ff";
+
+        ctx.lineWidth = 4;
+
+        ctx.stroke();
+    }
+}
+
+
+/* =========================================================
+   DRAW OBSTACLES
+========================================================= */
+
+function drawObstacles() {
+
+    for (
+        const o of obstacles
+    ) {
+
+        ctx.save();
+
+
+        ctx.translate(
+            o.x,
+            o.y
+        );
+
+
+        ctx.rotate(
+            o.rotation
+        );
+
+
+        /* Red obstacle */
+
+        ctx.fillStyle =
+            "#d82d4b";
+
+
+        ctx.beginPath();
+
+
+        ctx.roundRect(
+            -o.size,
+            -o.size,
+            o.size * 2,
+            o.size * 2,
+            8
+        );
+
+
+        ctx.fill();
+
+
+        ctx.strokeStyle =
+            "#ff6a7d";
+
+        ctx.lineWidth = 2;
+
+        ctx.stroke();
+
+
+        /* Number */
+
+        ctx.rotate(
+            -o.rotation
+        );
+
+
+        ctx.fillStyle =
+            "#ffffff";
+
+
+        ctx.font =
+            "bold " +
+            Math.floor(
+                o.size * 0.72
+            ) +
+            "px Arial";
+
+
+        ctx.textAlign =
+            "center";
+
+        ctx.textBaseline =
+            "middle";
+
+
+        ctx.fillText(
+            o.hits,
+            0,
+            0
+        );
+
+
+        ctx.restore();
+    }
+}
+
+
+/* =========================================================
+   DRAW POWERS
+========================================================= */
+
+function drawPowers() {
+
+    for (
+        const p of powers
+    ) {
+
+        ctx.save();
+
+
+        ctx.translate(
+            p.x,
+            p.y
+        );
+
+
+        /* Glow */
+
+        ctx.beginPath();
+
+        ctx.arc(
+            0,
+            0,
+            p.size + 6,
+            0,
+            Math.PI * 2
+        );
+
+
+        ctx.fillStyle =
+            p.type === "bullet"
+            ? "rgba(20,160,240,0.22)"
+            : "rgba(80,230,255,0.25)";
+
+        ctx.fill();
+
+
+        /* Orb */
+
+        ctx.beginPath();
+
+        ctx.arc(
+            0,
+            0,
+            p.size,
+            0,
+            Math.PI * 2
+        );
+
+
+        ctx.fillStyle =
+            p.type === "bullet"
+            ? "#159fe8"
+            : "#5fe5ff";
+
+        ctx.fill();
+
+
+        ctx.strokeStyle =
+            "#d8faff";
+
+        ctx.lineWidth = 2;
+
+        ctx.stroke();
+
+
+        /* Icon */
+
+        ctx.fillStyle =
+            "#ffffff";
+
+        ctx.font =
+            "bold 15px Arial";
+
+        ctx.textAlign =
+            "center";
+
+        ctx.textBaseline =
+            "middle";
+
+
+        ctx.fillText(
+            p.type === "bullet"
+            ? "⚡"
+            : "S",
+            0,
+            0
+        );
+
+
+        ctx.restore();
+    }
+}
+
+
+/* =========================================================
+   DRAW PARTICLES
+========================================================= */
+
+function drawParticles() {
+
+    for (
+        const p of particles
+    ) {
+
+        ctx.globalAlpha =
+            Math.max(
+                0,
+                p.life /
+                p.maxLife
+            );
+
+
+        ctx.fillStyle =
+            "#72dfff";
+
+
+        ctx.fillRect(
+            p.x,
+            p.y,
+            3,
+            3
+        );
+    }
+
+
+    ctx.globalAlpha = 1;
+}
+
+
+/* =========================================================
+   UPDATE HUD
+========================================================= */
+
+function updateHUD() {
+
+    scoreEl.textContent =
+        score;
+
+
+    bestEl.textContent =
+        best;
+
+
+    timerEl.textContent =
+        Math.ceil(
+            timeLeft
+        );
+
+
+    if (lives === 3) {
+
+        livesEl.textContent =
+            "❤️ ❤️ ❤️";
+
+    } else if (lives === 2) {
+
+        livesEl.textContent =
+            "❤️ ❤️";
+
+    } else if (lives === 1) {
+
+        livesEl.textContent =
+            "❤️";
+
+    } else {
+
+        livesEl.textContent =
+            "💔";
+    }
+
+
+    powerEl.textContent =
+        "POWER: " +
+        bulletsPower +
+        (
+            bulletsPower === 1
+            ? " BULLET"
+            : " BULLETS"
+        ) +
+        (
+            powerTime > 0
+            ? " | " +
+              Math.ceil(powerTime) +
+              "s"
+            : ""
+        );
+
+
+    comboEl.textContent =
+        "COMBO x" +
+        combo;
+
+
+    if (
+        shieldTime > 0
+    ) {
+
+        shieldText.textContent =
+            "🛡️ SHIELD: " +
+            Math.ceil(
+                shieldTime
+            ) +
+            "s";
+
+    } else {
+
+        shieldText.textContent =
+            "SHIELD: OFF";
+    }
+}
+
+
+/* =========================================================
+   STATUS MESSAGE
+========================================================= */
+
+let statusTimeout = null;
+
+
+function showStatus(text) {
+
+    statusEl.textContent =
+        text;
+
+
+    statusEl.style.opacity =
+        "1";
+
+
+    if (
+        statusTimeout !== null
+    ) {
+
+        clearTimeout(
+            statusTimeout
+        );
+    }
+
+
+    statusTimeout =
+        setTimeout(
+            function() {
+
+                statusEl.style.opacity =
+                    "0";
+
+            },
+            900
+        );
+}
+
+
+/* =========================================================
+   GAME OVER
+========================================================= */
+
+function endGame() {
+
+    gameRunning = false;
+
+
+    if (
+        score > best
+    ) {
+
+        best = score;
+
+
+        localStorage.setItem(
+            "surviveShootBest",
+            best
+        );
+    }
+
+
+    title.textContent =
+        "GAME OVER";
+
+
+    message.innerHTML =
+        "FINAL SCORE: <b>" +
+        score +
+        "</b><br><br>" +
+
+        "BEST SCORE: <b>" +
+        best +
+        "</b><br><br>" +
+
+        "Try again and beat your score!";
+
+
+    startBtn.textContent =
+        "PLAY AGAIN";
+
+
+    overlay.style.display =
+        "flex";
+
+
+    updateHUD();
+}
+
+
+/* =========================================================
+   WIN GAME
+========================================================= */
+
+function winGame() {
+
+    gameRunning = false;
+
+
+    score += 5000;
+
+
+    if (
+        score > best
+    ) {
+
+        best = score;
+
+
+        localStorage.setItem(
+            "surviveShootBest",
+            best
+        );
+    }
+
+
+    title.textContent =
+        "🎉 YOU SURVIVED!";
+
+
+    message.innerHTML =
+        "60 SECONDS COMPLETE!<br><br>" +
+
+        "SURVIVAL BONUS: <b>+5000</b><br>" +
+
+        "FINAL SCORE: <b>" +
+        score +
+        "</b>";
+
+
+    startBtn.textContent =
+        "PLAY AGAIN";
+
+
+    overlay.style.display =
+        "flex";
+
+
+    updateHUD();
+}
+
+
+/* =========================================================
+   FIRST SCREEN
+========================================================= */
+
+draw();
+
+</script>
+
+</body>
+</html>
