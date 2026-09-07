@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
-<title>60 Seconds - Survive & Shoot</title>
+<title><script src="https://www.gstatic.com/youtube/gaming/playables/v1/ytgame.js"></script></title>
 
 <style>
 * {
@@ -308,7 +308,47 @@ canvas {
 /* =========================================================
    GAME SETUP
 ========================================================= */
+/* =========================================================
+   YOUTUBE PLAYABLES SDK
+========================================================= */
 
+let ytPaused = false;
+
+function notifyPlayablesReady() {
+    if (
+        typeof ytgame !== "undefined" &&
+        ytgame.game
+    ) {
+        try {
+            ytgame.game.firstFrameReady();
+            ytgame.game.gameReady();
+        } catch (error) {
+            console.log("Playables SDK:", error);
+        }
+    }
+}
+
+function setupPlayables() {
+
+    if (
+        typeof ytgame === "undefined" ||
+        !ytgame.system
+    ) {
+        return;
+    }
+
+    ytgame.system.onPause(() => {
+        ytPaused = true;
+    });
+
+    ytgame.system.onResume(() => {
+        ytPaused = false;
+        lastTime = performance.now();
+    });
+}
+
+setupPlayables();
+    
 const canvas = document.getElementById("game");
 const ctx = canvas.getContext("2d");
 
@@ -601,8 +641,13 @@ function gameLoop(now) {
         return;
     }
 
-    let dt =
-        (now - lastTime) / 1000;
+    if (ytPaused) {
+        lastTime = now;
+        requestAnimationFrame(gameLoop);
+        return;
+    }
+
+    let dt = (now - lastTime) / 1000;
 
     lastTime = now;
 
@@ -611,7 +656,6 @@ function gameLoop(now) {
     }
 
     update(dt);
-
     draw();
 
     requestAnimationFrame(gameLoop);
@@ -2218,6 +2262,9 @@ function winGame() {
 ========================================================= */
 
 draw();
+
+/* Tell YouTube that the first frame and main menu are ready */
+notifyPlayablesReady();
 
 </script>
 
