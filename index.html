@@ -1,464 +1,265 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-
 <meta charset="UTF-8">
-
 <meta name="viewport"
-      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+      content="width=device-width,
+               initial-scale=1.0,
+               maximum-scale=1.0,
+               user-scalable=no">
 
 <title>60 Seconds - Survive Shoot</title>
 
-<!-- =========================================================
-     YOUTUBE PLAYABLES SDK
-     MUST LOAD BEFORE ANY GAME CODE
-========================================================= -->
+<!-- YouTube Playables SDK MUST load before game code -->
 <script src="https://www.youtube.com/game_api/v1"></script>
 
 <style>
-
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-    -webkit-tap-highlight-color: transparent;
-}
-
-html,
-body {
-    width: 100%;
-    height: 100%;
-    overflow: hidden;
-}
-
-body {
-    background: #050816;
-    color: white;
-    font-family: Arial, sans-serif;
-
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-#gameWrap {
-
-    width: min(100vw, 1000px);
-
-    aspect-ratio: 1000 / 650;
-
-    position: relative;
-
-    overflow: hidden;
-
-    background: #071126;
-
-    border: 2px solid #183b6b;
-
-    border-radius: 12px;
-}
-
-canvas {
-
-    width: 100%;
-    height: 100%;
-
-    display: block;
-}
-
-#hud {
-
-    position: absolute;
-
-    top: 10px;
-    left: 10px;
-    right: 10px;
-
-    display: flex;
-
-    justify-content: space-between;
-
-    align-items: flex-start;
-
-    z-index: 5;
-
-    pointer-events: none;
-}
-
-.box {
-
-    background: rgba(0, 10, 30, 0.82);
-
-    border: 1px solid #28527e;
-
-    border-radius: 8px;
-
-    padding: 7px 10px;
-
-    font-size: 13px;
-
-    line-height: 1.45;
-}
-
-#timer {
-
-    font-size: 20px;
-
-    font-weight: bold;
-
-    color: #66d9ff;
-}
-
-#lives {
-
-    color: #ff6677;
-
-    font-size: 16px;
-
-    font-weight: bold;
-}
-
-#power {
-
-    color: #55d9ff;
-
-    font-weight: bold;
-}
-
-#combo {
-
-    color: #ffd45a;
-
-    font-weight: bold;
-}
-
-#shieldText {
-
-    color: #72eaff;
-
-    font-weight: bold;
-}
-
-#status {
-
-    position: absolute;
-
-    top: 92px;
-    left: 50%;
-
-    transform: translateX(-50%);
-
-    color: #70e6ff;
-
-    font-size: 15px;
-
-    font-weight: bold;
-
-    opacity: 0;
-
-    transition: opacity 0.2s;
-
-    z-index: 7;
-
-    pointer-events: none;
-
-    white-space: nowrap;
-}
-
-#controls {
-
-    position: absolute;
-
-    bottom: 12px;
-    left: 12px;
-    right: 12px;
-
-    display: flex;
-
-    justify-content: space-between;
-
-    z-index: 6;
-
-    pointer-events: none;
-}
-
-.control {
-
-    width: 75px;
-    height: 55px;
-
-    border: 1px solid rgba(100, 190, 255, 0.5);
-
-    background: rgba(5, 20, 45, 0.75);
-
-    color: white;
-
-    border-radius: 12px;
-
-    font-size: 24px;
-
-    font-weight: bold;
-
-    pointer-events: auto;
-
-    user-select: none;
-
-    touch-action: none;
-}
-
-.control:active {
-
-    transform: scale(0.94);
-}
-
-#overlay {
-
-    position: absolute;
-
-    inset: 0;
-
-    background: rgba(1, 5, 18, 0.86);
-
-    display: flex;
-
-    justify-content: center;
-
-    align-items: center;
-
-    text-align: center;
-
-    z-index: 10;
-}
-
-.panel {
-
-    width: min(88%, 460px);
-
-    padding: 25px;
-
-    background: rgba(5, 16, 38, 0.97);
-
-    border: 1px solid #2d6da5;
-
-    border-radius: 15px;
-
-    box-shadow: 0 0 35px rgba(40, 150, 255, 0.15);
-}
-
-.panel h1 {
-
-    font-size: 30px;
-
-    margin-bottom: 12px;
-
-    color: #67dfff;
-}
-
-.panel p {
-
-    color: #b9cce0;
-
-    font-size: 14px;
-
-    line-height: 1.6;
-
-    margin-bottom: 20px;
-}
-
-#startBtn {
-
-    border: none;
-
-    border-radius: 9px;
-
-    padding: 12px 26px;
-
-    background: #1688d8;
-
-    color: white;
-
-    font-size: 16px;
-
-    font-weight: bold;
-
-    cursor: pointer;
-
-    touch-action: manipulation;
-}
-
-#startBtn:active {
-
-    transform: scale(0.96);
-}
-
-@media (max-width: 600px) {
+    * {
+        box-sizing: border-box;
+        -webkit-tap-highlight-color: transparent;
+    }
+
+    html,
+    body {
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        background: #050816;
+        font-family: Arial, sans-serif;
+        touch-action: none;
+    }
+
+    body {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
 
     #gameWrap {
-
-        width: 100vw;
-
-        border-radius: 0;
-
-        border-width: 1px;
+        position: relative;
+        width: min(100vw, 1000px);
+        height: min(100vh, 650px);
+        aspect-ratio: 1000 / 650;
+        overflow: hidden;
+        background: #050816;
     }
 
-    .box {
-
-        padding: 5px 7px;
-
-        font-size: 10px;
+    canvas {
+        display: block;
+        width: 100%;
+        height: 100%;
+        background:
+            radial-gradient(circle at center, #101a35 0%, #050816 65%);
     }
 
-    #timer {
+    #hud {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        right: 10px;
+        z-index: 5;
 
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+
+        color: white;
         font-size: 16px;
+        font-weight: bold;
+
+        pointer-events: none;
+        text-shadow: 0 2px 4px #000;
     }
 
-    #lives {
-
-        font-size: 13px;
+    .hudBox {
+        background: rgba(0, 0, 0, 0.35);
+        padding: 7px 10px;
+        border-radius: 8px;
+        margin-bottom: 5px;
     }
 
-    .control {
-
-        width: 62px;
-
-        height: 48px;
+    #powerText {
+        color: #4db8ff;
     }
 
-    .panel h1 {
-
-        font-size: 24px;
+    #shieldText {
+        color: #73f6ff;
     }
-}
 
+    #overlay {
+        position: absolute;
+        inset: 0;
+        z-index: 10;
+
+        display: none;
+        align-items: center;
+        justify-content: center;
+
+        background: rgba(0, 0, 0, 0.72);
+        color: white;
+        text-align: center;
+    }
+
+    #overlay.show {
+        display: flex;
+    }
+
+    #overlayContent {
+        width: min(88%, 420px);
+        padding: 28px 20px;
+        border-radius: 18px;
+        background: rgba(10, 17, 38, 0.96);
+        border: 1px solid rgba(100, 180, 255, 0.35);
+        box-shadow: 0 0 30px rgba(0, 120, 255, 0.2);
+    }
+
+    #overlayTitle {
+        margin: 0 0 12px;
+        font-size: 32px;
+    }
+
+    #finalScore {
+        font-size: 22px;
+        margin: 10px 0;
+    }
+
+    #bestScoreFinal {
+        font-size: 18px;
+        opacity: 0.9;
+    }
+
+    #restartBtn {
+        margin-top: 20px;
+        border: none;
+        border-radius: 12px;
+        padding: 13px 25px;
+
+        background: #1687ff;
+        color: white;
+
+        font-size: 17px;
+        font-weight: bold;
+
+        cursor: pointer;
+    }
+
+    #restartBtn:active {
+        transform: scale(0.96);
+    }
+
+    #mobileControls {
+        position: absolute;
+        bottom: 15px;
+        left: 15px;
+        right: 15px;
+        z-index: 7;
+
+        display: flex;
+        justify-content: space-between;
+
+        pointer-events: none;
+    }
+
+    .controlBtn {
+        width: 72px;
+        height: 72px;
+
+        border-radius: 50%;
+        border: 1px solid rgba(255,255,255,0.25);
+
+        background: rgba(20, 35, 70, 0.72);
+        color: white;
+
+        font-size: 30px;
+        font-weight: bold;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        user-select: none;
+        pointer-events: auto;
+    }
+
+    .controlBtn:active {
+        transform: scale(0.92);
+        background: rgba(40, 90, 150, 0.85);
+    }
+
+    @media (min-width: 800px) {
+        #mobileControls {
+            opacity: 0.35;
+        }
+    }
 </style>
-
 </head>
-
 
 <body>
 
 <div id="gameWrap">
 
-    <canvas
-        id="game"
-        width="1000"
-        height="650">
+    <canvas id="gameCanvas"
+            width="1000"
+            height="650">
     </canvas>
-
-
-    <!-- =====================================================
-         HUD
-    ====================================================== -->
 
     <div id="hud">
 
-        <div class="box">
+        <div>
+            <div class="hudBox">
+                SCORE: <span id="score">0</span>
+            </div>
 
-            SCORE:
-            <b id="score">0</b>
-
-            <br>
-
-            BEST:
-            <b id="best">0</b>
-
+            <div class="hudBox">
+                BEST: <span id="best">0</span>
+            </div>
         </div>
 
-
-        <div
-            class="box"
-            style="text-align:center;"
-        >
-
-            <div id="timer">
-                60
+        <div style="text-align:right;">
+            <div class="hudBox">
+                TIME: <span id="time">60</span>
             </div>
 
-            <div id="combo">
-                COMBO x0
+            <div class="hudBox">
+                LIVES: <span id="lives">3</span>
             </div>
 
-        </div>
-
-
-        <div
-            class="box"
-            style="text-align:right;"
-        >
-
-            <div id="lives">
-                ❤️ ❤️ ❤️
+            <div class="hudBox" id="powerText">
+                BULLETS: <span id="bulletPower">1</span>
             </div>
 
-            <div id="power">
-                POWER: 1 BULLET
+            <div class="hudBox" id="shieldText">
+                SHIELD: <span id="shieldStatus">OFF</span>
             </div>
-
-            <div id="shieldText">
-                SHIELD: OFF
-            </div>
-
         </div>
 
     </div>
 
-
-    <div id="status"></div>
-
-
-    <!-- =====================================================
-         MOBILE CONTROLS
-    ====================================================== -->
-
-    <div id="controls">
-
-        <button
-            class="control"
-            id="leftBtn">
-            ◀
-        </button>
-
-        <button
-            class="control"
-            id="rightBtn">
-            ▶
-        </button>
-
+    <div id="mobileControls">
+        <div class="controlBtn" id="leftBtn">◀</div>
+        <div class="controlBtn" id="rightBtn">▶</div>
     </div>
-
-
-    <!-- =====================================================
-         START / GAME OVER
-    ====================================================== -->
 
     <div id="overlay">
 
-        <div class="panel">
+        <div id="overlayContent">
 
-            <h1 id="title">
-                60 SECONDS
+            <h1 id="overlayTitle">
+                GAME OVER
             </h1>
 
-            <p id="message">
+            <div id="finalScore">
+                SCORE: 0
+            </div>
 
-                Numbered red hurdles ko shoot karo.<br>
+            <div id="bestScoreFinal">
+                BEST: 0
+            </div>
 
-                Number jitna hoga,
-                utne hits lagenge.<br><br>
-
-                🔵 Blue Power = Extra Bullets<br>
-
-                🛡️ Shield = Temporary Protection<br>
-
-                ❤️ 3 Lives Available
-
-            </p>
-
-            <button id="startBtn">
-                START GAME
+            <button id="restartBtn">
+                PLAY AGAIN
             </button>
 
         </div>
@@ -467,22 +268,413 @@ canvas {
 
 </div>
 
-
 <script>
+"use strict";
 
 /* =========================================================
-   YOUTUBE PLAYABLES SDK
+   CANVAS
+========================================================= */
+
+const canvas = document.getElementById("gameCanvas");
+const ctx = canvas.getContext("2d");
+
+const W = canvas.width;
+const H = canvas.height;
+
+
+/* =========================================================
+   UI
+========================================================= */
+
+const scoreEl = document.getElementById("score");
+const bestEl = document.getElementById("best");
+const timeEl = document.getElementById("time");
+const livesEl = document.getElementById("lives");
+const bulletPowerEl = document.getElementById("bulletPower");
+const shieldStatusEl = document.getElementById("shieldStatus");
+
+const overlay = document.getElementById("overlay");
+const overlayTitle = document.getElementById("overlayTitle");
+const finalScoreEl = document.getElementById("finalScore");
+const bestScoreFinalEl = document.getElementById("bestScoreFinal");
+const restartBtn = document.getElementById("restartBtn");
+
+
+/* =========================================================
+   PLAYABLES STATE
 ========================================================= */
 
 let ytPaused = false;
-
 let playablesReady = false;
+
+let cloudSaveLoaded = false;
+let cloudSavePending = false;
+let scoreSentThisRun = false;
+
+
+/* =========================================================
+   SAFE LOCAL STORAGE
+========================================================= */
+
+function getLocalBestScore() {
+
+    try {
+
+        const value =
+            Number(localStorage.getItem("surviveShootBest") || 0);
+
+        if (!Number.isFinite(value) || value < 0) {
+            return 0;
+        }
+
+        return Math.floor(value);
+
+    } catch (error) {
+
+        console.log("LocalStorage read error:", error);
+
+        return 0;
+    }
+}
+
+
+function saveLocalBestScore(value) {
+
+    try {
+
+        localStorage.setItem(
+            "surviveShootBest",
+            String(Math.floor(value))
+        );
+
+    } catch (error) {
+
+        console.log("LocalStorage write error:", error);
+    }
+}
+
+
+/* =========================================================
+   GAME VARIABLES
+========================================================= */
+
+let player;
+
+let bullets = [];
+let obstacles = [];
+let particles = [];
+let powerUps = [];
+
+let score = 0;
+let best = getLocalBestScore();
+
+let lives = 3;
+
+let gameTime = 60;
+let gameRunning = true;
+
+let combo = 0;
+
+let bulletsPower = 1;
+let bulletsPowerTimer = 0;
+
+let shieldActive = false;
+let shieldTimer = 0;
+
+let shootTimer = 0.34;
+
+let obstacleTimer = 0;
+
+let lastTime = performance.now();
+
+let keys = {
+    left: false,
+    right: false
+};
+
+
+/* =========================================================
+   PLAYER
+========================================================= */
+
+function createPlayer() {
+
+    return {
+        x: W / 2,
+        y: H - 75,
+
+        width: 46,
+        height: 34,
+
+        speed: 520,
+
+        invincibleTimer: 0
+    };
+}
+
+
+/* =========================================================
+   RESET GAME
+========================================================= */
+
+function resetGame() {
+
+    player = createPlayer();
+
+    bullets = [];
+    obstacles = [];
+    particles = [];
+    powerUps = [];
+
+    score = 0;
+
+    lives = 3;
+
+    gameTime = 60;
+
+    combo = 0;
+
+    bulletsPower = 1;
+    bulletsPowerTimer = 0;
+
+    shieldActive = false;
+    shieldTimer = 0;
+
+    shootTimer = 0.34;
+
+    obstacleTimer = 0;
+
+    gameRunning = true;
+
+    scoreSentThisRun = false;
+
+    overlay.classList.remove("show");
+
+    updateHUD();
+}
+
+
+/* =========================================================
+   CLOUD SAVE
+========================================================= */
+
+/*
+    Only a very small object is saved.
+
+    Example:
+    {"bestScore":1234}
+
+    This is far below the 3 MiB Playables limit.
+*/
+
+function makeCloudSaveData() {
+
+    const safeBest =
+        Math.max(
+            0,
+            Math.floor(
+                Number.isFinite(best) ? best : 0
+            )
+        );
+
+    return JSON.stringify({
+        bestScore: safeBest
+    });
+}
 
 
 /*
-    Pause / Resume setup
-    Called after game variables are initialized.
+    Save data to YouTube Playables cloud storage.
 */
+
+async function saveCloudData() {
+
+    if (
+        typeof ytgame === "undefined" ||
+        !ytgame.game ||
+        typeof ytgame.game.saveData !== "function"
+    ) {
+        return;
+    }
+
+    if (cloudSavePending) {
+        return;
+    }
+
+    cloudSavePending = true;
+
+    try {
+
+        const data = makeCloudSaveData();
+
+        /*
+            Keep this check as an additional safety measure.
+            Our actual data is only a few bytes.
+        */
+
+        if (
+            typeof String.prototype.isWellFormed === "function" &&
+            !data.isWellFormed()
+        ) {
+            console.log("Cloud save string is not well formed.");
+            return;
+        }
+
+        await ytgame.game.saveData(data);
+
+        console.log(
+            "Cloud save successful:",
+            data
+        );
+
+    } catch (error) {
+
+        console.log(
+            "Cloud save error:",
+            error
+        );
+
+    } finally {
+
+        cloudSavePending = false;
+    }
+}
+
+
+/*
+    Load best score from YouTube cloud storage.
+
+    Local score is kept as fallback.
+*/
+
+async function loadCloudData() {
+
+    if (
+        typeof ytgame === "undefined" ||
+        !ytgame.game ||
+        typeof ytgame.game.loadData !== "function"
+    ) {
+        return;
+    }
+
+    try {
+
+        const data =
+            await ytgame.game.loadData();
+
+        if (
+            typeof data === "string" &&
+            data.length > 0
+        ) {
+
+            const parsed =
+                JSON.parse(data);
+
+            const cloudBest =
+                Number(parsed.bestScore);
+
+            if (
+                Number.isFinite(cloudBest) &&
+                cloudBest >= 0
+            ) {
+
+                best =
+                    Math.max(
+                        best,
+                        Math.floor(cloudBest)
+                    );
+
+                saveLocalBestScore(best);
+
+                updateHUD();
+
+                console.log(
+                    "Cloud best loaded:",
+                    best
+                );
+            }
+        }
+
+        cloudSaveLoaded = true;
+
+    } catch (error) {
+
+        /*
+            A first-time player may have no cloud data.
+            That should not stop the game.
+        */
+
+        cloudSaveLoaded = true;
+
+        console.log(
+            "Cloud load unavailable:",
+            error
+        );
+    }
+}
+
+
+/* =========================================================
+   SEND SCORE
+========================================================= */
+
+async function sendFinalScore() {
+
+    if (scoreSentThisRun) {
+        return;
+    }
+
+    scoreSentThisRun = true;
+
+    /*
+        Playables requires the score value to be an integer.
+    */
+
+    const finalIntegerScore =
+        Math.floor(
+            Math.max(
+                0,
+                Number.isFinite(score) ? score : 0
+            )
+        );
+
+    if (
+        typeof ytgame === "undefined" ||
+        !ytgame.engagement ||
+        typeof ytgame.engagement.sendScore !== "function"
+    ) {
+
+        console.log(
+            "sendScore unavailable outside Playables."
+        );
+
+        return;
+    }
+
+    try {
+
+        await ytgame.engagement.sendScore({
+            value: finalIntegerScore
+        });
+
+        console.log(
+            "Score sent:",
+            finalIntegerScore
+        );
+
+    } catch (error) {
+
+        console.log(
+            "sendScore error:",
+            error
+        );
+    }
+}
+
+
+/* =========================================================
+   PLAYABLES SETUP
+========================================================= */
 
 function setupPlayables() {
 
@@ -492,64 +684,62 @@ function setupPlayables() {
     ) {
 
         console.log(
-            "Playables SDK system unavailable."
+            "Playables SDK not available."
         );
 
         return;
     }
 
 
-    try {
+    /*
+        YouTube pauses the game.
+    */
 
-        ytgame.system.onPause(
-            function() {
+    if (
+        typeof ytgame.system.onPause === "function"
+    ) {
 
-                ytPaused = true;
+        ytgame.system.onPause(() => {
 
-            }
-        );
+            ytPaused = true;
 
+            /*
+                Save quickly because YouTube gives
+                the game a short window during pause.
+            */
 
-        ytgame.system.onResume(
-            function() {
-
-                ytPaused = false;
-
-                lastTime =
-                    performance.now();
-
-            }
-        );
+            saveCloudData();
+        });
+    }
 
 
-        console.log(
-            "Playables pause/resume connected."
-        );
+    /*
+        YouTube resumes the game.
+    */
 
-    } catch (error) {
+    if (
+        typeof ytgame.system.onResume === "function"
+    ) {
 
-        console.log(
-            "Playables system error:",
-            error
-        );
+        ytgame.system.onResume(() => {
+
+            ytPaused = false;
+
+            lastTime = performance.now();
+        });
     }
 }
 
 
-/*
-    Notify YouTube that the first frame
-    and main menu are ready.
-
-    firstFrameReady MUST come before gameReady.
-*/
+/* =========================================================
+   PLAYABLES READY
+========================================================= */
 
 function notifyPlayablesReady() {
 
     if (playablesReady) {
-
         return;
     }
-
 
     if (
         typeof ytgame === "undefined" ||
@@ -563,15 +753,20 @@ function notifyPlayablesReady() {
         return;
     }
 
-
     try {
+
+        /*
+            REQUIRED ORDER:
+            firstFrameReady()
+            THEN
+            gameReady()
+        */
 
         ytgame.game.firstFrameReady();
 
         ytgame.game.gameReady();
 
         playablesReady = true;
-
 
         console.log(
             "Playables: firstFrameReady + gameReady"
@@ -580,7 +775,7 @@ function notifyPlayablesReady() {
     } catch (error) {
 
         console.log(
-            "Playables SDK:",
+            "Playables readiness error:",
             error
         );
     }
@@ -588,758 +783,32 @@ function notifyPlayablesReady() {
 
 
 /* =========================================================
-   CANVAS
-========================================================= */
-
-const canvas =
-    document.getElementById("game");
-
-const ctx =
-    canvas.getContext("2d");
-
-
-const W =
-    canvas.width;
-
-const H =
-    canvas.height;
-
-
-/* =========================================================
-   HUD ELEMENTS
-========================================================= */
-
-const scoreEl =
-    document.getElementById("score");
-
-const bestEl =
-    document.getElementById("best");
-
-const timerEl =
-    document.getElementById("timer");
-
-const livesEl =
-    document.getElementById("lives");
-
-const powerEl =
-    document.getElementById("power");
-
-const comboEl =
-    document.getElementById("combo");
-
-const shieldText =
-    document.getElementById("shieldText");
-
-
-const overlay =
-    document.getElementById("overlay");
-
-const title =
-    document.getElementById("title");
-
-const message =
-    document.getElementById("message");
-
-const startBtn =
-    document.getElementById("startBtn");
-
-const statusEl =
-    document.getElementById("status");
-
-
-/* =========================================================
-   GAME VARIABLES
-========================================================= */
-
-let gameRunning = false;
-
-let score = 0;
-
-let timeLeft = 60;
-
-let lives = 3;
-
-
-/* =========================================================
-   SAFE LOCAL STORAGE
-========================================================= */
-
-function getBestScore() {
-
-    try {
-
-        return Number(
-            localStorage.getItem(
-                "surviveShootBest"
-            ) || 0
-        );
-
-    } catch (error) {
-
-        console.log(
-            "LocalStorage read error:",
-            error
-        );
-
-        return 0;
-    }
-}
-
-
-function saveBestScore(value) {
-
-    try {
-
-        localStorage.setItem(
-            "surviveShootBest",
-            String(value)
-        );
-
-    } catch (error) {
-
-        console.log(
-            "LocalStorage write error:",
-            error
-        );
-    }
-}
-
-
-let best =
-    getBestScore();
-
-
-/* =========================================================
-   POWER
-========================================================= */
-
-let bulletsPower = 1;
-
-let powerTime = 0;
-
-let shieldTime = 0;
-
-
-/* =========================================================
-   COMBO
-========================================================= */
-
-let combo = 0;
-
-let comboTimer = 0;
-
-
-/* =========================================================
-   TIMERS
-========================================================= */
-
-let spawnTimer = 0;
-
-let shootTimer = 0;
-
-
-/* =========================================================
-   FRAME TIME
-========================================================= */
-
-let lastTime = 0;
-
-
-/* =========================================================
-   ARRAYS
-========================================================= */
-
-let obstacles = [];
-
-let bullets = [];
-
-let powers = [];
-
-let particles = [];
-
-
-/* =========================================================
-   CONTROLS
-========================================================= */
-
-let leftPressed = false;
-
-let rightPressed = false;
-
-
-/* =========================================================
-   PLAYER
-========================================================= */
-
-const player = {
-
-    x: W / 2,
-
-    y: H - 75,
-
-    w: 34,
-
-    h: 42,
-
-    speed: 470
-};
-
-
-/* =========================================================
-   INITIAL HUD
-========================================================= */
-
-bestEl.textContent =
-    best;
-
-
-/* =========================================================
-   KEYBOARD CONTROLS
-========================================================= */
-
-document.addEventListener(
-    "keydown",
-    function(e) {
-
-        if (
-            e.key === "ArrowLeft" ||
-            e.key.toLowerCase() === "a"
-        ) {
-
-            leftPressed = true;
-
-            e.preventDefault();
-        }
-
-
-        if (
-            e.key === "ArrowRight" ||
-            e.key.toLowerCase() === "d"
-        ) {
-
-            rightPressed = true;
-
-            e.preventDefault();
-        }
-
-
-        if (
-            e.code === "Space" &&
-            !gameRunning
-        ) {
-
-            e.preventDefault();
-
-            startGame();
-        }
-    }
-);
-
-
-document.addEventListener(
-    "keyup",
-    function(e) {
-
-        if (
-            e.key === "ArrowLeft" ||
-            e.key.toLowerCase() === "a"
-        ) {
-
-            leftPressed = false;
-        }
-
-
-        if (
-            e.key === "ArrowRight" ||
-            e.key.toLowerCase() === "d"
-        ) {
-
-            rightPressed = false;
-        }
-    }
-);
-
-
-/* =========================================================
-   MOBILE CONTROLS
-========================================================= */
-
-function setupButton(
-    button,
-    direction
-) {
-
-    function press(e) {
-
-        e.preventDefault();
-
-
-        if (
-            direction === "left"
-        ) {
-
-            leftPressed = true;
-        }
-
-
-        if (
-            direction === "right"
-        ) {
-
-            rightPressed = true;
-        }
-    }
-
-
-    function release(e) {
-
-        e.preventDefault();
-
-
-        if (
-            direction === "left"
-        ) {
-
-            leftPressed = false;
-        }
-
-
-        if (
-            direction === "right"
-        ) {
-
-            rightPressed = false;
-        }
-    }
-
-
-    button.addEventListener(
-        "touchstart",
-        press,
-        { passive: false }
-    );
-
-
-    button.addEventListener(
-        "touchend",
-        release,
-        { passive: false }
-    );
-
-
-    button.addEventListener(
-        "touchcancel",
-        release,
-        { passive: false }
-    );
-
-
-    button.addEventListener(
-        "mousedown",
-        press
-    );
-
-
-    button.addEventListener(
-        "mouseup",
-        release
-    );
-
-
-    button.addEventListener(
-        "mouseleave",
-        release
-    );
-}
-
-
-setupButton(
-    document.getElementById("leftBtn"),
-    "left"
-);
-
-
-setupButton(
-    document.getElementById("rightBtn"),
-    "right"
-);
-
-
-/* =========================================================
-   START BUTTON
-========================================================= */
-
-startBtn.addEventListener(
-    "click",
-    startGame
-);
-
-
-/* =========================================================
-   START GAME
-========================================================= */
-
-function startGame() {
-
-    score = 0;
-
-    timeLeft = 60;
-
-    lives = 3;
-
-
-    bulletsPower = 1;
-
-    powerTime = 0;
-
-    shieldTime = 0;
-
-
-    combo = 0;
-
-    comboTimer = 0;
-
-
-    spawnTimer = 0.3;
-
-    shootTimer = 0.2;
-
-
-    obstacles = [];
-
-    bullets = [];
-
-    powers = [];
-
-    particles = [];
-
-
-    player.x =
-        W / 2;
-
-
-    leftPressed = false;
-
-    rightPressed = false;
-
-
-    gameRunning = true;
-
-
-    overlay.style.display =
-        "none";
-
-
-    updateHUD();
-
-
-    lastTime =
-        performance.now();
-
-
-    requestAnimationFrame(
-        gameLoop
-    );
-}
-
-
-/* =========================================================
-   GAME LOOP
-========================================================= */
-
-function gameLoop(now) {
-
-    if (!gameRunning) {
-
-        return;
-    }
-
-
-    /*
-        YouTube Playables pause
-    */
-
-    if (ytPaused) {
-
-        lastTime = now;
-
-        requestAnimationFrame(
-            gameLoop
-        );
-
-        return;
-    }
-
-
-    let dt =
-        (now - lastTime) /
-        1000;
-
-
-    lastTime = now;
-
-
-    /*
-        Prevent huge frame jumps
-    */
-
-    if (dt > 0.035) {
-
-        dt = 0.035;
-    }
-
-
-    update(dt);
-
-    draw();
-
-
-    requestAnimationFrame(
-        gameLoop
-    );
-}
-
-
-/* =========================================================
-   UPDATE
-========================================================= */
-
-function update(dt) {
-
-    timeLeft -= dt;
-
-
-    if (timeLeft <= 0) {
-
-        timeLeft = 0;
-
-        winGame();
-
-        return;
-    }
-
-
-    /* =====================================================
-       PLAYER MOVEMENT
-    ====================================================== */
-
-    if (leftPressed) {
-
-        player.x -=
-            player.speed * dt;
-    }
-
-
-    if (rightPressed) {
-
-        player.x +=
-            player.speed * dt;
-    }
-
-
-    player.x =
-        Math.max(
-            player.w,
-            Math.min(
-                W - player.w,
-                player.x
-            )
-        );
-
-
-    /* =====================================================
-       POWER TIMER
-    ====================================================== */
-
-    if (powerTime > 0) {
-
-        powerTime -= dt;
-
-
-        if (powerTime <= 0) {
-
-            powerTime = 0;
-
-            bulletsPower = 1;
-
-
-            showStatus(
-                "POWER OVER"
-            );
-        }
-    }
-
-
-    /* =====================================================
-       SHIELD TIMER
-    ====================================================== */
-
-    if (shieldTime > 0) {
-
-        shieldTime -= dt;
-
-
-        if (shieldTime < 0) {
-
-            shieldTime = 0;
-        }
-    }
-
-
-    /* =====================================================
-       COMBO TIMER
-    ====================================================== */
-
-    if (comboTimer > 0) {
-
-        comboTimer -= dt;
-
-
-        if (comboTimer <= 0) {
-
-            comboTimer = 0;
-
-            combo = 0;
-        }
-    }
-
-
-    /* =====================================================
-       AUTOMATIC SHOOTING
-       ORIGINAL SHOOTING MECHANIC
-    ====================================================== */
-
-    shootTimer -= dt;
-
-
-    if (shootTimer <= 0) {
-
-        shoot();
-
-
-        if (bulletsPower >= 4) {
-
-            shootTimer = 0.23;
-
-        } else if (
-            bulletsPower === 3
-        ) {
-
-            shootTimer = 0.27;
-
-        } else if (
-            bulletsPower === 2
-        ) {
-
-            shootTimer = 0.30;
-
-        } else {
-
-            shootTimer = 0.34;
-        }
-    }
-
-
-    /* =====================================================
-       OBSTACLE SPAWN
-    ====================================================== */
-
-    spawnTimer -= dt;
-
-
-    if (spawnTimer <= 0) {
-
-        spawnObstacle();
-
-
-        const elapsed =
-            60 - timeLeft;
-
-
-        const difficulty =
-            Math.min(
-                0.45,
-                elapsed * 0.006
-            );
-
-
-        spawnTimer =
-            Math.max(
-                0.25,
-                0.72 - difficulty
-            );
-    }
-
-
-    /* =====================================================
-       OBJECT UPDATES
-    ====================================================== */
-
-    updateBullets(dt);
-
-    updateObstacles(dt);
-
-    updatePowers(dt);
-
-    updateParticles(dt);
-
-
-    /* =====================================================
-       COLLISIONS
-    ====================================================== */
-
-    checkPowerCollision();
-
-    checkObstacleCollision();
-
-
-    updateHUD();
-}
-
-
-/* =========================================================
-   SHOOT
-   ORIGINAL FUNCTION PRESERVED
+   SHOOTING
+   ORIGINAL SHOOTING MECHANIC PRESERVED
 ========================================================= */
 
 function shoot() {
 
-    /*
-        1 BULLET
-    */
-
     if (bulletsPower === 1) {
 
         bullets.push({
-
             x: player.x,
-
             y: player.y - 22,
-
             vx: 0,
-
             vy: -720
-
         });
 
         return;
     }
 
 
-    /*
-        MULTIPLE BULLETS
-    */
-
     let spread;
-
 
     if (bulletsPower === 2) {
 
         spread = 70;
 
-    } else if (
-        bulletsPower === 3
-    ) {
+    } else if (bulletsPower === 3) {
 
         spread = 90;
 
@@ -1349,35 +818,23 @@ function shoot() {
     }
 
 
-    const count =
-        bulletsPower;
+    const count = bulletsPower;
 
-
-    for (
-        let i = 0;
-        i < count;
-        i++
-    ) {
+    for (let i = 0; i < count; i++) {
 
         const center =
             (count - 1) / 2;
 
-
         const vx =
-            (i - center) *
-            spread;
-
+            (i - center) * spread;
 
         bullets.push({
 
             x: player.x,
-
             y: player.y - 22,
 
             vx: vx,
-
             vy: -720
-
         });
     }
 }
@@ -1389,543 +846,60 @@ function shoot() {
 
 function spawnObstacle() {
 
-    const elapsed =
-        60 - timeLeft;
-
-
-    let difficulty =
+    const number =
         Math.floor(
-            elapsed / 15
-        );
+            Math.random() * 5
+        ) + 1;
 
-
-    difficulty =
-        Math.min(
-            3,
-            difficulty
-        );
-
-
-    const hits =
-        1 +
-        Math.floor(
-            Math.random() *
-            (2 + difficulty)
-        );
-
-
-    const size =
-        25 +
-        Math.random() * 10;
-
+    const size = 42;
 
     obstacles.push({
 
         x:
-            size +
             Math.random() *
-            (W - size * 2),
+            (W - size),
 
-        y:
-            -size,
+        y: -size,
 
-        size:
-            size,
+        width: size,
+        height: size,
 
-        hits:
-            hits,
-
-        maxHits:
-            hits,
+        hp: number,
+        maxHp: number,
 
         speed:
             145 +
-            Math.random() * 70 +
-            difficulty * 35,
-
-        rotation:
-            Math.random() *
-            Math.PI
-
+            Math.random() * 130
     });
 }
 
 
 /* =========================================================
-   UPDATE OBSTACLES
+   SPAWN POWER UP
 ========================================================= */
 
-function updateObstacles(dt) {
+function spawnPowerUp() {
 
-    for (
-        let i = obstacles.length - 1;
-        i >= 0;
-        i--
-    ) {
+    const type =
+        Math.random() < 0.72
+            ? "bullet"
+            : "shield";
 
-        const o =
-            obstacles[i];
+    powerUps.push({
 
+        x:
+            35 +
+            Math.random() *
+            (W - 70),
 
-        o.y +=
-            o.speed * dt;
+        y: -25,
 
+        size: 22,
 
-        o.rotation +=
-            0.5 * dt;
+        type: type,
 
-
-        if (
-            o.y >
-            H + o.size
-        ) {
-
-            obstacles.splice(
-                i,
-                1
-            );
-
-
-            combo = 0;
-
-            comboTimer = 0;
-        }
-    }
-}
-
-
-/* =========================================================
-   UPDATE BULLETS
-========================================================= */
-
-function updateBullets(dt) {
-
-    for (
-        let i = bullets.length - 1;
-        i >= 0;
-        i--
-    ) {
-
-        const b =
-            bullets[i];
-
-
-        b.x +=
-            b.vx * dt;
-
-
-        b.y +=
-            b.vy * dt;
-
-
-        let hitSomething = false;
-
-
-        /* =================================================
-           BULLET VS OBSTACLE
-        ================================================== */
-
-        for (
-            let j = obstacles.length - 1;
-            j >= 0;
-            j--
-        ) {
-
-            const o =
-                obstacles[j];
-
-
-            const dx =
-                b.x - o.x;
-
-
-            const dy =
-                b.y - o.y;
-
-
-            const distance =
-                Math.sqrt(
-                    dx * dx +
-                    dy * dy
-                );
-
-
-            if (
-                distance <
-                o.size
-            ) {
-
-                o.hits--;
-
-
-                createParticles(
-                    b.x,
-                    b.y,
-                    5
-                );
-
-
-                bullets.splice(
-                    i,
-                    1
-                );
-
-
-                hitSomething = true;
-
-
-                if (
-                    o.hits <= 0
-                ) {
-
-                    destroyObstacle(j);
-
-                } else {
-
-                    showStatus(
-                        "HIT! " +
-                        o.hits +
-                        " LEFT"
-                    );
-                }
-
-
-                break;
-            }
-        }
-
-
-        if (hitSomething) {
-
-            continue;
-        }
-
-
-        /* =================================================
-           REMOVE BULLET
-        ================================================== */
-
-        if (
-            b.y < -40 ||
-            b.x < -60 ||
-            b.x > W + 60
-        ) {
-
-            bullets.splice(
-                i,
-                1
-            );
-        }
-    }
-}
-
-
-/* =========================================================
-   DESTROY OBSTACLE
-========================================================= */
-
-function destroyObstacle(index) {
-
-    const o =
-        obstacles[index];
-
-
-    let bonus = 100;
-
-
-    combo++;
-
-    comboTimer = 2.5;
-
-
-    if (combo >= 3) {
-
-        bonus +=
-            combo * 20;
-    }
-
-
-    score += bonus;
-
-
-    createParticles(
-        o.x,
-        o.y,
-        18
-    );
-
-
-    /*
-        Chance of power pickup
-    */
-
-    if (
-        Math.random() < 0.18
-    ) {
-
-        powers.push({
-
-            x: o.x,
-
-            y: o.y,
-
-            size: 14,
-
-            vy: 90,
-
-            type:
-                Math.random() < 0.72
-                ? "bullet"
-                : "shield"
-
-        });
-    }
-
-
-    obstacles.splice(
-        index,
-        1
-    );
-
-
-    if (combo >= 3) {
-
-        showStatus(
-            "COMBO x" +
-            combo +
-            "  +" +
-            bonus
-        );
-    }
-}
-
-
-/* =========================================================
-   UPDATE POWERS
-========================================================= */
-
-function updatePowers(dt) {
-
-    for (
-        let i = powers.length - 1;
-        i >= 0;
-        i--
-    ) {
-
-        const p =
-            powers[i];
-
-
-        p.y +=
-            p.vy * dt;
-
-
-        if (
-            p.y >
-            H + 30
-        ) {
-
-            powers.splice(
-                i,
-                1
-            );
-        }
-    }
-}
-
-
-/* =========================================================
-   POWER COLLISION
-========================================================= */
-
-function checkPowerCollision() {
-
-    for (
-        let i = powers.length - 1;
-        i >= 0;
-        i--
-    ) {
-
-        const p =
-            powers[i];
-
-
-        const dx =
-            p.x - player.x;
-
-
-        const dy =
-            p.y - player.y;
-
-
-        const distance =
-            Math.sqrt(
-                dx * dx +
-                dy * dy
-            );
-
-
-        if (
-            distance < 42
-        ) {
-
-            if (
-                p.type === "bullet"
-            ) {
-
-                bulletsPower =
-                    Math.min(
-                        4,
-                        bulletsPower + 1
-                    );
-
-
-                powerTime = 10;
-
-
-                showStatus(
-                    "⚡ POWER " +
-                    bulletsPower +
-                    " BULLETS"
-                );
-
-            } else {
-
-                shieldTime = 6;
-
-
-                showStatus(
-                    "🛡️ SHIELD ACTIVE"
-                );
-            }
-
-
-            createParticles(
-                p.x,
-                p.y,
-                15
-            );
-
-
-            powers.splice(
-                i,
-                1
-            );
-        }
-    }
-}
-
-
-/* =========================================================
-   OBSTACLE COLLISION
-========================================================= */
-
-function checkObstacleCollision() {
-
-    for (
-        let i = obstacles.length - 1;
-        i >= 0;
-        i--
-    ) {
-
-        const o =
-            obstacles[i];
-
-
-        const dx =
-            o.x - player.x;
-
-
-        const dy =
-            o.y - player.y;
-
-
-        const distance =
-            Math.sqrt(
-                dx * dx +
-                dy * dy
-            );
-
-
-        if (
-            distance <
-            o.size + 22
-        ) {
-
-            /*
-                Shield active
-            */
-
-            if (
-                shieldTime > 0
-            ) {
-
-                createParticles(
-                    o.x,
-                    o.y,
-                    25
-                );
-
-
-                obstacles.splice(
-                    i,
-                    1
-                );
-
-
-                score += 50;
-
-
-                showStatus(
-                    "🛡️ BLOCKED!"
-                );
-
-            } else {
-
-                loseLife(i);
-            }
-        }
-    }
-}
-
-
-/* =========================================================
-   LOSE LIFE
-========================================================= */
-
-function loseLife(index) {
-
-    lives--;
-
-
-    combo = 0;
-
-    comboTimer = 0;
-
-
-    createParticles(
-        player.x,
-        player.y,
-        22
-    );
-
-
-    obstacles.splice(
-        index,
-        1
-    );
-
-
-    if (lives <= 0) {
-
-        endGame();
-
-    } else {
-
-        showStatus(
-            "⚠️ LIFE LOST"
-        );
-    }
+        speed: 150
+    });
 }
 
 
@@ -1936,29 +910,28 @@ function loseLife(index) {
 function createParticles(
     x,
     y,
-    count
+    amount = 10
 ) {
 
     for (
         let i = 0;
-        i < count;
+        i < amount;
         i++
     ) {
 
         const angle =
             Math.random() *
-            Math.PI * 2;
-
+            Math.PI *
+            2;
 
         const speed =
-            60 +
-            Math.random() * 220;
-
+            70 +
+            Math.random() *
+            180;
 
         particles.push({
 
             x: x,
-
             y: y,
 
             vx:
@@ -1972,20 +945,516 @@ function createParticles(
             life:
                 0.35 +
                 Math.random() *
-                0.45,
-
-            maxLife:
-                0.8
+                0.35
         });
     }
 }
 
 
 /* =========================================================
-   UPDATE PARTICLES
+   COLLISION
 ========================================================= */
 
-function updateParticles(dt) {
+function rectCollision(a, b) {
+
+    return (
+        a.x < b.x + b.width &&
+        a.x + a.width > b.x &&
+        a.y < b.y + b.height &&
+        a.y + a.height > b.y
+    );
+}
+
+
+/* =========================================================
+   UPDATE
+========================================================= */
+
+function update(dt) {
+
+    if (!gameRunning || ytPaused) {
+        return;
+    }
+
+
+    /*
+        Prevent giant time jump.
+    */
+
+    dt =
+        Math.min(
+            dt,
+            0.05
+        );
+
+
+    /* ---------------- TIME ---------------- */
+
+    gameTime -= dt;
+
+    if (gameTime <= 0) {
+
+        gameTime = 0;
+
+        winGame();
+
+        return;
+    }
+
+
+    /* ---------------- PLAYER ---------------- */
+
+    let direction = 0;
+
+    if (keys.left) {
+        direction -= 1;
+    }
+
+    if (keys.right) {
+        direction += 1;
+    }
+
+    player.x +=
+        direction *
+        player.speed *
+        dt;
+
+    const half =
+        player.width / 2;
+
+    player.x =
+        Math.max(
+            half,
+            Math.min(
+                W - half,
+                player.x
+            )
+        );
+
+
+    if (player.invincibleTimer > 0) {
+
+        player.invincibleTimer -= dt;
+    }
+
+
+    /* ---------------- BULLET POWER ---------------- */
+
+    if (bulletsPowerTimer > 0) {
+
+        bulletsPowerTimer -= dt;
+
+        if (bulletsPowerTimer <= 0) {
+
+            bulletsPower = 1;
+
+            bulletsPowerTimer = 0;
+        }
+    }
+
+
+    /* ---------------- SHIELD ---------------- */
+
+    if (shieldTimer > 0) {
+
+        shieldTimer -= dt;
+
+        if (shieldTimer <= 0) {
+
+            shieldActive = false;
+
+            shieldTimer = 0;
+        }
+    }
+
+
+    /* ---------------- SHOOT ---------------- */
+
+    shootTimer -= dt;
+
+    if (shootTimer <= 0) {
+
+        shoot();
+
+        /*
+            ORIGINAL FIRE TIMING PRESERVED
+        */
+
+        if (bulletsPower >= 4) {
+
+            shootTimer = 0.23;
+
+        } else if (bulletsPower === 3) {
+
+            shootTimer = 0.27;
+
+        } else if (bulletsPower === 2) {
+
+            shootTimer = 0.30;
+
+        } else {
+
+            shootTimer = 0.34;
+        }
+    }
+
+
+    /* ---------------- OBSTACLE SPAWN ---------------- */
+
+    obstacleTimer -= dt;
+
+    if (obstacleTimer <= 0) {
+
+        spawnObstacle();
+
+        obstacleTimer =
+            0.55 +
+            Math.random() * 0.5;
+    }
+
+
+    /* ---------------- RANDOM POWER UP ---------------- */
+
+    if (
+        Math.random() <
+        0.0009
+    ) {
+
+        spawnPowerUp();
+    }
+
+
+    /* ---------------- BULLETS ---------------- */
+
+    for (
+        let i = bullets.length - 1;
+        i >= 0;
+        i--
+    ) {
+
+        const bullet =
+            bullets[i];
+
+        bullet.x +=
+            bullet.vx * dt;
+
+        bullet.y +=
+            bullet.vy * dt;
+
+
+        if (
+            bullet.y < -30 ||
+            bullet.x < -50 ||
+            bullet.x > W + 50
+        ) {
+
+            bullets.splice(i, 1);
+
+            continue;
+        }
+
+
+        let bulletHit = false;
+
+
+        for (
+            let j = obstacles.length - 1;
+            j >= 0;
+            j--
+        ) {
+
+            const obstacle =
+                obstacles[j];
+
+
+            const bulletBox = {
+
+                x:
+                    bullet.x - 4,
+
+                y:
+                    bullet.y - 9,
+
+                width: 8,
+
+                height: 18
+            };
+
+
+            if (
+                rectCollision(
+                    bulletBox,
+                    obstacle
+                )
+            ) {
+
+                obstacle.hp--;
+
+                createParticles(
+                    bullet.x,
+                    bullet.y,
+                    3
+                );
+
+                bullets.splice(i, 1);
+
+                bulletHit = true;
+
+
+                if (
+                    obstacle.hp <= 0
+                ) {
+
+                    score +=
+                        obstacle.maxHp * 10;
+
+                    combo++;
+
+                    createParticles(
+                        obstacle.x +
+                        obstacle.width / 2,
+
+                        obstacle.y +
+                        obstacle.height / 2,
+
+                        14
+                    );
+
+                    obstacles.splice(
+                        j,
+                        1
+                    );
+                }
+
+                break;
+            }
+        }
+
+
+        if (bulletHit) {
+            continue;
+        }
+    }
+
+
+    /* ---------------- OBSTACLES ---------------- */
+
+    for (
+        let i = obstacles.length - 1;
+        i >= 0;
+        i--
+    ) {
+
+        const obstacle =
+            obstacles[i];
+
+        obstacle.y +=
+            obstacle.speed *
+            dt;
+
+
+        if (
+            obstacle.y >
+            H + 50
+        ) {
+
+            obstacles.splice(i, 1);
+
+            combo = 0;
+
+            continue;
+        }
+
+
+        const playerBox = {
+
+            x:
+                player.x -
+                player.width / 2,
+
+            y:
+                player.y -
+                player.height / 2,
+
+            width:
+                player.width,
+
+            height:
+                player.height
+        };
+
+
+        if (
+            rectCollision(
+                playerBox,
+                obstacle
+            )
+        ) {
+
+            if (
+                shieldActive
+            ) {
+
+                shieldActive = false;
+                shieldTimer = 0;
+
+                createParticles(
+                    obstacle.x +
+                    obstacle.width / 2,
+
+                    obstacle.y +
+                    obstacle.height / 2,
+
+                    12
+                );
+
+                obstacles.splice(
+                    i,
+                    1
+                );
+
+            } else if (
+                player.invincibleTimer <= 0
+            ) {
+
+                lives--;
+
+                player.invincibleTimer =
+                    1.2;
+
+                combo = 0;
+
+                createParticles(
+                    player.x,
+                    player.y,
+                    18
+                );
+
+                obstacles.splice(
+                    i,
+                    1
+                );
+
+
+                if (lives <= 0) {
+
+                    endGame();
+
+                    return;
+                }
+            }
+        }
+    }
+
+
+    /* ---------------- POWER UPS ---------------- */
+
+    for (
+        let i = powerUps.length - 1;
+        i >= 0;
+        i--
+    ) {
+
+        const power =
+            powerUps[i];
+
+        power.y +=
+            power.speed *
+            dt;
+
+
+        if (
+            power.y >
+            H + 40
+        ) {
+
+            powerUps.splice(i, 1);
+
+            continue;
+        }
+
+
+        const powerBox = {
+
+            x:
+                power.x -
+                power.size,
+
+            y:
+                power.y -
+                power.size,
+
+            width:
+                power.size * 2,
+
+            height:
+                power.size * 2
+        };
+
+
+        const playerBox = {
+
+            x:
+                player.x -
+                player.width / 2,
+
+            y:
+                player.y -
+                player.height / 2,
+
+            width:
+                player.width,
+
+            height:
+                player.height
+        };
+
+
+        if (
+            rectCollision(
+                playerBox,
+                powerBox
+            )
+        ) {
+
+            if (
+                power.type === "bullet"
+            ) {
+
+                bulletsPower =
+                    Math.min(
+                        4,
+                        bulletsPower + 1
+                    );
+
+                bulletsPowerTimer =
+                    10;
+
+            } else {
+
+                shieldActive = true;
+
+                shieldTimer = 6;
+            }
+
+
+            score += 25;
+
+            createParticles(
+                power.x,
+                power.y,
+                12
+            );
+
+            powerUps.splice(
+                i,
+                1
+            );
+        }
+    }
+
+
+    /* ---------------- PARTICLES ---------------- */
 
     for (
         let i = particles.length - 1;
@@ -1993,23 +1462,22 @@ function updateParticles(dt) {
         i--
     ) {
 
-        const p =
+        const particle =
             particles[i];
 
+        particle.x +=
+            particle.vx *
+            dt;
 
-        p.x +=
-            p.vx * dt;
+        particle.y +=
+            particle.vy *
+            dt;
 
-
-        p.y +=
-            p.vy * dt;
-
-
-        p.life -= dt;
+        particle.life -= dt;
 
 
         if (
-            p.life <= 0
+            particle.life <= 0
         ) {
 
             particles.splice(
@@ -2018,67 +1486,174 @@ function updateParticles(dt) {
             );
         }
     }
+
+
+    /* ---------------- BEST SCORE ---------------- */
+
+    if (score > best) {
+
+        best =
+            Math.floor(score);
+
+        saveLocalBestScore(best);
+    }
+
+
+    updateHUD();
 }
 
 
 /* =========================================================
-   DRAW
+   GAME OVER
 ========================================================= */
 
-function draw() {
+function endGame() {
 
-    ctx.clearRect(
-        0,
-        0,
-        W,
-        H
-    );
+    if (!gameRunning) {
+        return;
+    }
+
+    gameRunning = false;
+
+    score =
+        Math.floor(
+            Math.max(
+                0,
+                score
+            )
+        );
+
+    if (score > best) {
+
+        best = score;
+
+        saveLocalBestScore(best);
+    }
 
 
-    drawBackground();
+    /*
+        Send final integer score.
+    */
 
-    drawPowers();
+    sendFinalScore();
 
-    drawObstacles();
+    /*
+        Save best score to Playables cloud.
+    */
 
-    drawBullets();
+    saveCloudData();
 
-    drawPlayer();
 
-    drawParticles();
+    overlayTitle.textContent =
+        "GAME OVER";
+
+    finalScoreEl.textContent =
+        "SCORE: " + score;
+
+    bestScoreFinalEl.textContent =
+        "BEST: " + best;
+
+    overlay.classList.add("show");
+
+    updateHUD();
 }
 
 
 /* =========================================================
-   BACKGROUND
+   WIN GAME
+========================================================= */
+
+function winGame() {
+
+    if (!gameRunning) {
+        return;
+    }
+
+    gameRunning = false;
+
+    score += 500;
+
+    score =
+        Math.floor(
+            Math.max(
+                0,
+                score
+            )
+        );
+
+
+    if (score > best) {
+
+        best = score;
+
+        saveLocalBestScore(best);
+    }
+
+
+    /*
+        Send final integer score.
+    */
+
+    sendFinalScore();
+
+    /*
+        Save cloud data.
+    */
+
+    saveCloudData();
+
+
+    overlayTitle.textContent =
+        "YOU SURVIVED!";
+
+    finalScoreEl.textContent =
+        "SCORE: " + score;
+
+    bestScoreFinalEl.textContent =
+        "BEST: " + best;
+
+    overlay.classList.add("show");
+
+    updateHUD();
+}
+
+
+/* =========================================================
+   HUD
+========================================================= */
+
+function updateHUD() {
+
+    scoreEl.textContent =
+        Math.floor(score);
+
+    bestEl.textContent =
+        Math.floor(best);
+
+    timeEl.textContent =
+        Math.ceil(gameTime);
+
+    livesEl.textContent =
+        lives;
+
+    bulletPowerEl.textContent =
+        bulletsPower;
+
+    shieldStatusEl.textContent =
+        shieldActive
+            ? Math.ceil(shieldTimer) + "s"
+            : "OFF";
+}
+
+
+/* =========================================================
+   DRAW BACKGROUND
 ========================================================= */
 
 function drawBackground() {
 
-    const gradient =
-        ctx.createLinearGradient(
-            0,
-            0,
-            0,
-            H
-        );
-
-
-    gradient.addColorStop(
-        0,
-        "#050a20"
-    );
-
-
-    gradient.addColorStop(
-        1,
-        "#091a32"
-    );
-
-
     ctx.fillStyle =
-        gradient;
-
+        "#050816";
 
     ctx.fillRect(
         0,
@@ -2088,100 +1663,55 @@ function drawBackground() {
     );
 
 
-    /* =====================================================
-       STARS
-    ====================================================== */
-
-    ctx.fillStyle =
-        "rgba(130,210,255,0.5)";
-
-
-    const starMove =
-        (performance.now() / 35) % H;
-
-
-    for (
-        let i = 0;
-        i < 80;
-        i++
-    ) {
-
-        const x =
-            (i * 137) % W;
-
-
-        const y =
-            (
-                i * 83 +
-                starMove
-            ) % H;
-
-
-        ctx.fillRect(
-            x,
-            y,
-            2,
-            2
-        );
-    }
-
-
-    /* =====================================================
-       GRID
-    ====================================================== */
+    /*
+        Subtle grid
+    */
 
     ctx.strokeStyle =
-        "rgba(50,150,220,0.12)";
-
+        "rgba(70,130,200,0.08)";
 
     ctx.lineWidth = 1;
 
+    const grid = 50;
 
     for (
         let x = 0;
-        x < W;
-        x += 50
+        x <= W;
+        x += grid
     ) {
 
         ctx.beginPath();
-
 
         ctx.moveTo(
             x,
             0
         );
 
-
         ctx.lineTo(
             x,
             H
         );
 
-
         ctx.stroke();
     }
 
-
     for (
         let y = 0;
-        y < H;
-        y += 50
+        y <= H;
+        y += grid
     ) {
 
         ctx.beginPath();
-
 
         ctx.moveTo(
             0,
             y
         );
 
-
         ctx.lineTo(
             W,
             y
         );
-
 
         ctx.stroke();
     }
@@ -2196,136 +1726,111 @@ function drawPlayer() {
 
     ctx.save();
 
-
     ctx.translate(
         player.x,
         player.y
     );
 
 
-    /* =====================================================
-       SHIELD
-    ====================================================== */
-
     if (
-        shieldTime > 0
+        player.invincibleTimer > 0
     ) {
 
-        ctx.beginPath();
-
-
-        ctx.arc(
-            0,
-            0,
-            36,
-            0,
-            Math.PI * 2
-        );
-
-
-        ctx.fillStyle =
-            "rgba(60,210,255,0.08)";
-
-
-        ctx.fill();
-
-
-        ctx.strokeStyle =
-            "rgba(80,220,255,0.95)";
-
-
-        ctx.lineWidth = 3;
-
-
-        ctx.stroke();
+        ctx.globalAlpha =
+            0.45 +
+            Math.sin(
+                performance.now() * 0.02
+            ) * 0.25;
     }
 
 
-    /* =====================================================
-       SHIP
-    ====================================================== */
+    /*
+        Ship body
+    */
 
     ctx.beginPath();
 
-
     ctx.moveTo(
         0,
-        -24
+        -22
     );
-
 
     ctx.lineTo(
-        -19,
-        20
+        -24,
+        18
     );
-
 
     ctx.lineTo(
         0,
-        12
+        10
     );
-
 
     ctx.lineTo(
-        19,
-        20
+        24,
+        18
     );
-
 
     ctx.closePath();
 
-
     ctx.fillStyle =
-        "#58d9ff";
-
+        "#1687ff";
 
     ctx.fill();
 
-
     ctx.strokeStyle =
-        "#d5f7ff";
-
+        "#8fd7ff";
 
     ctx.lineWidth = 2;
-
 
     ctx.stroke();
 
 
-    /* =====================================================
-       ENGINE
-    ====================================================== */
+    /*
+        Core
+    */
 
     ctx.beginPath();
 
-
-    ctx.moveTo(
-        -7,
-        17
-    );
-
-
-    ctx.lineTo(
+    ctx.arc(
         0,
-        31 +
-        Math.random() * 7
-    );
-
-
-    ctx.lineTo(
+        1,
         7,
-        17
+        0,
+        Math.PI * 2
     );
-
-
-    ctx.closePath();
-
 
     ctx.fillStyle =
-        "#65bfff";
-
+        "#ffffff";
 
     ctx.fill();
+
+
+    /*
+        Shield
+    */
+
+    if (shieldActive) {
+
+        ctx.beginPath();
+
+        ctx.arc(
+            0,
+            0,
+            34,
+            0,
+            Math.PI * 2
+        );
+
+        ctx.strokeStyle =
+            "#73f6ff";
+
+        ctx.lineWidth = 3;
+
+        ctx.globalAlpha =
+            0.75;
+
+        ctx.stroke();
+    }
 
 
     ctx.restore();
@@ -2339,33 +1844,36 @@ function drawPlayer() {
 function drawBullets() {
 
     for (
-        const b of bullets
+        const bullet of bullets
     ) {
+
+        ctx.save();
 
         ctx.beginPath();
 
-
         ctx.moveTo(
-            b.x,
-            b.y
+            bullet.x,
+            bullet.y + 8
         );
-
 
         ctx.lineTo(
-            b.x -
-            b.vx * 0.018,
-            b.y + 14
+            bullet.x,
+            bullet.y - 8
         );
 
-
         ctx.strokeStyle =
-            "#b8f4ff";
-
+            "#ffffff";
 
         ctx.lineWidth = 4;
 
+        ctx.shadowBlur = 12;
+
+        ctx.shadowColor =
+            "#48aaff";
 
         ctx.stroke();
+
+        ctx.restore();
     }
 }
 
@@ -2377,32 +1885,23 @@ function drawBullets() {
 function drawObstacles() {
 
     for (
-        const o of obstacles
+        const obstacle of obstacles
     ) {
 
         ctx.save();
 
 
-        ctx.translate(
-            o.x,
-            o.y
-        );
-
-
-        ctx.rotate(
-            o.rotation
-        );
-
-
-        /* =================================================
-           RED OBSTACLE
-        ================================================== */
+        /*
+            Red numbered hurdle
+        */
 
         ctx.fillStyle =
-            "#d82d4b";
+            "#e53935";
 
+        ctx.strokeStyle =
+            "#ff8a80";
 
-        ctx.beginPath();
+        ctx.lineWidth = 2;
 
 
         /*
@@ -2410,76 +1909,59 @@ function drawObstacles() {
             for compatibility
         */
 
+        ctx.beginPath();
+
         if (
             typeof ctx.roundRect ===
             "function"
         ) {
 
             ctx.roundRect(
-                -o.size,
-                -o.size,
-                o.size * 2,
-                o.size * 2,
+                obstacle.x,
+                obstacle.y,
+                obstacle.width,
+                obstacle.height,
                 8
             );
 
         } else {
 
             ctx.rect(
-                -o.size,
-                -o.size,
-                o.size * 2,
-                o.size * 2
+                obstacle.x,
+                obstacle.y,
+                obstacle.width,
+                obstacle.height
             );
         }
 
-
         ctx.fill();
-
-
-        ctx.strokeStyle =
-            "#ff6a7d";
-
-
-        ctx.lineWidth = 2;
-
 
         ctx.stroke();
 
 
-        /* =================================================
-           NUMBER
-        ================================================== */
-
-        ctx.rotate(
-            -o.rotation
-        );
-
+        /*
+            Number
+        */
 
         ctx.fillStyle =
             "#ffffff";
 
-
         ctx.font =
-            "bold " +
-            Math.floor(
-                o.size * 0.72
-            ) +
-            "px Arial";
-
+            "bold 22px Arial";
 
         ctx.textAlign =
             "center";
 
-
         ctx.textBaseline =
             "middle";
 
-
         ctx.fillText(
-            o.hits,
-            0,
-            0
+            obstacle.hp,
+            obstacle.x +
+            obstacle.width / 2,
+
+            obstacle.y +
+            obstacle.height / 2
         );
 
 
@@ -2489,114 +1971,111 @@ function drawObstacles() {
 
 
 /* =========================================================
-   DRAW POWERS
+   DRAW POWER UPS
 ========================================================= */
 
-function drawPowers() {
+function drawPowerUps() {
 
     for (
-        const p of powers
+        const power of powerUps
     ) {
 
         ctx.save();
 
-
         ctx.translate(
-            p.x,
-            p.y
+            power.x,
+            power.y
         );
 
 
-        /* =================================================
-           GLOW
-        ================================================== */
+        if (
+            power.type === "bullet"
+        ) {
 
-        ctx.beginPath();
+            ctx.beginPath();
 
+            ctx.arc(
+                0,
+                0,
+                power.size,
+                0,
+                Math.PI * 2
+            );
 
-        ctx.arc(
-            0,
-            0,
-            p.size + 6,
-            0,
-            Math.PI * 2
-        );
+            ctx.fillStyle =
+                "#1687ff";
 
+            ctx.fill();
 
-        ctx.fillStyle =
-            p.type === "bullet"
-            ? "rgba(20,160,240,0.22)"
-            : "rgba(80,230,255,0.25)";
+            ctx.strokeStyle =
+                "#b9e6ff";
 
+            ctx.lineWidth = 2;
 
-        ctx.fill();
-
-
-        /* =================================================
-           ORB
-        ================================================== */
-
-        ctx.beginPath();
+            ctx.stroke();
 
 
-        ctx.arc(
-            0,
-            0,
-            p.size,
-            0,
-            Math.PI * 2
-        );
+            ctx.fillStyle =
+                "#ffffff";
+
+            ctx.font =
+                "bold 18px Arial";
+
+            ctx.textAlign =
+                "center";
+
+            ctx.textBaseline =
+                "middle";
+
+            ctx.fillText(
+                "+",
+                0,
+                0
+            );
+
+        } else {
+
+            ctx.beginPath();
+
+            ctx.arc(
+                0,
+                0,
+                power.size,
+                0,
+                Math.PI * 2
+            );
+
+            ctx.fillStyle =
+                "#28e7ff";
+
+            ctx.fill();
+
+            ctx.strokeStyle =
+                "#ffffff";
+
+            ctx.lineWidth = 2;
+
+            ctx.stroke();
 
 
-        ctx.fillStyle =
-            p.type === "bullet"
-            ? "#159fe8"
-            : "#5fe5ff";
+            ctx.fillStyle =
+                "#ffffff";
 
+            ctx.font =
+                "bold 16px Arial";
 
-        ctx.fill();
+            ctx.textAlign =
+                "center";
 
+            ctx.textBaseline =
+                "middle";
 
-        ctx.strokeStyle =
-            "#d8faff";
-
-
-        ctx.lineWidth = 2;
-
-
-        ctx.stroke();
-
-
-        /* =================================================
-           ICON
-        ================================================== */
-
-        ctx.fillStyle =
-            "#ffffff";
-
-
-        ctx.font =
-            "bold 15px Arial";
-
-
-        ctx.textAlign =
-            "center";
-
-
-        ctx.textBaseline =
-            "middle";
-
-
-        ctx.fillText(
-
-            p.type === "bullet"
-            ? "⚡"
-            : "S",
-
-            0,
-            0
-        );
-
+            ctx.fillText(
+                "S",
+                0,
+                0
+            );
+        }
 
         ctx.restore();
     }
@@ -2610,271 +2089,256 @@ function drawPowers() {
 function drawParticles() {
 
     for (
-        const p of particles
+        const particle of particles
     ) {
+
+        ctx.save();
 
         ctx.globalAlpha =
             Math.max(
                 0,
-                p.life /
-                p.maxLife
+                particle.life
             );
 
-
         ctx.fillStyle =
-            "#72dfff";
-
+            "#6cc8ff";
 
         ctx.fillRect(
-            p.x,
-            p.y,
+            particle.x,
+            particle.y,
             3,
             3
         );
-    }
 
-
-    ctx.globalAlpha = 1;
-}
-
-
-/* =========================================================
-   UPDATE HUD
-========================================================= */
-
-function updateHUD() {
-
-    scoreEl.textContent =
-        score;
-
-
-    bestEl.textContent =
-        best;
-
-
-    timerEl.textContent =
-        Math.ceil(
-            timeLeft
-        );
-
-
-    if (
-        lives === 3
-    ) {
-
-        livesEl.textContent =
-            "❤️ ❤️ ❤️";
-
-    } else if (
-        lives === 2
-    ) {
-
-        livesEl.textContent =
-            "❤️ ❤️";
-
-    } else if (
-        lives === 1
-    ) {
-
-        livesEl.textContent =
-            "❤️";
-
-    } else {
-
-        livesEl.textContent =
-            "💔";
-    }
-
-
-    powerEl.textContent =
-        "POWER: " +
-        bulletsPower +
-        (
-            bulletsPower === 1
-            ? " BULLET"
-            : " BULLETS"
-        ) +
-        (
-            powerTime > 0
-            ? " | " +
-              Math.ceil(
-                  powerTime
-              ) +
-              "s"
-            : ""
-        );
-
-
-    comboEl.textContent =
-        "COMBO x" +
-        combo;
-
-
-    if (
-        shieldTime > 0
-    ) {
-
-        shieldText.textContent =
-            "🛡️ SHIELD: " +
-            Math.ceil(
-                shieldTime
-            ) +
-            "s";
-
-    } else {
-
-        shieldText.textContent =
-            "SHIELD: OFF";
+        ctx.restore();
     }
 }
 
 
 /* =========================================================
-   STATUS MESSAGE
+   DRAW
 ========================================================= */
 
-let statusTimeout = null;
+function draw() {
 
+    drawBackground();
 
-function showStatus(text) {
+    drawPowerUps();
 
-    statusEl.textContent =
-        text;
+    drawObstacles();
 
+    drawBullets();
 
-    statusEl.style.opacity =
-        "1";
+    drawParticles();
 
-
-    if (
-        statusTimeout !== null
-    ) {
-
-        clearTimeout(
-            statusTimeout
-        );
-    }
-
-
-    statusTimeout =
-        setTimeout(
-            function() {
-
-                statusEl.style.opacity =
-                    "0";
-
-            },
-            900
-        );
+    drawPlayer();
 }
 
 
 /* =========================================================
-   GAME OVER
+   GAME LOOP
 ========================================================= */
 
-function endGame() {
+function gameLoop(now) {
 
-    gameRunning = false;
+    const dt =
+        (now - lastTime) /
+        1000;
 
+    lastTime = now;
 
-    if (
-        score > best
-    ) {
+    update(dt);
 
-        best = score;
+    draw();
 
-        saveBestScore(best);
-    }
-
-
-    title.textContent =
-        "GAME OVER";
-
-
-    message.innerHTML =
-        "FINAL SCORE: <b>" +
-        score +
-        "</b><br><br>" +
-
-        "BEST SCORE: <b>" +
-        best +
-        "</b><br><br>" +
-
-        "Try again and beat your score!";
-
-
-    startBtn.textContent =
-        "PLAY AGAIN";
-
-
-    overlay.style.display =
-        "flex";
-
-
-    updateHUD();
+    requestAnimationFrame(
+        gameLoop
+    );
 }
 
 
 /* =========================================================
-   WIN GAME
+   KEYBOARD
 ========================================================= */
 
-function winGame() {
+window.addEventListener(
+    "keydown",
+    function(event) {
 
-    gameRunning = false;
+        if (
+            event.key === "ArrowLeft" ||
+            event.key.toLowerCase() === "a"
+        ) {
+
+            keys.left = true;
+
+            event.preventDefault();
+        }
 
 
-    score += 5000;
+        if (
+            event.key === "ArrowRight" ||
+            event.key.toLowerCase() === "d"
+        ) {
 
+            keys.right = true;
 
-    if (
-        score > best
-    ) {
-
-        best = score;
-
-        saveBestScore(best);
+            event.preventDefault();
+        }
     }
+);
 
 
-    title.textContent =
-        "🎉 YOU SURVIVED!";
+window.addEventListener(
+    "keyup",
+    function(event) {
+
+        if (
+            event.key === "ArrowLeft" ||
+            event.key.toLowerCase() === "a"
+        ) {
+
+            keys.left = false;
+        }
 
 
-    message.innerHTML =
-        "60 SECONDS COMPLETE!<br><br>" +
+        if (
+            event.key === "ArrowRight" ||
+            event.key.toLowerCase() === "d"
+        ) {
 
-        "SURVIVAL BONUS: <b>+5000</b><br>" +
-
-        "FINAL SCORE: <b>" +
-        score +
-        "</b>";
-
-
-    startBtn.textContent =
-        "PLAY AGAIN";
-
-
-    overlay.style.display =
-        "flex";
-
-
-    updateHUD();
-}
+            keys.right = false;
+        }
+    }
+);
 
 
 /* =========================================================
-   INITIAL FRAME
+   MOBILE CONTROLS
 ========================================================= */
+
+function holdButton(
+    button,
+    direction
+) {
+
+    button.addEventListener(
+        "pointerdown",
+        function(event) {
+
+            event.preventDefault();
+
+            keys[direction] = true;
+        }
+    );
+
+
+    button.addEventListener(
+        "pointerup",
+        function(event) {
+
+            event.preventDefault();
+
+            keys[direction] = false;
+        }
+    );
+
+
+    button.addEventListener(
+        "pointercancel",
+        function() {
+
+            keys[direction] = false;
+        }
+    );
+
+
+    button.addEventListener(
+        "pointerleave",
+        function() {
+
+            keys[direction] = false;
+        }
+    );
+}
+
+
+holdButton(
+    document.getElementById("leftBtn"),
+    "left"
+);
+
+holdButton(
+    document.getElementById("rightBtn"),
+    "right"
+);
+
+
+/* =========================================================
+   RESTART
+========================================================= */
+
+restartBtn.addEventListener(
+    "click",
+    function() {
+
+        resetGame();
+
+        lastTime =
+            performance.now();
+    }
+);
+
+
+/* =========================================================
+   VISIBILITY SAFETY
+========================================================= */
+
+document.addEventListener(
+    "visibilitychange",
+    function() {
+
+        if (
+            document.hidden
+        ) {
+
+            ytPaused = true;
+
+            saveCloudData();
+
+        } else {
+
+            ytPaused = false;
+
+            lastTime =
+                performance.now();
+        }
+    }
+);
+
+
+/* =========================================================
+   INITIALIZE
+========================================================= */
+
+player =
+    createPlayer();
+
+best =
+    getLocalBestScore();
+
+updateHUD();
+
+setupPlayables();
 
 draw();
 
 
 /*
-    Wait one animation frame so the initial
-    game frame has actually been rendered,
-    then notify YouTube.
+    Tell YouTube that the first frame is available,
+    then game is ready.
+
+    The game itself is already interactable.
 */
 
 requestAnimationFrame(
@@ -2882,18 +2346,24 @@ requestAnimationFrame(
 
         notifyPlayablesReady();
 
+        /*
+            Load cloud data AFTER readiness so
+            gameReady is not delayed by cloud API.
+        */
+
+        loadCloudData();
     }
 );
 
 
-/* =========================================================
-   INITIALIZE PLAYABLES
-========================================================= */
+/*
+    Start game loop.
+*/
 
-setupPlayables();
-
+requestAnimationFrame(
+    gameLoop
+);
 </script>
 
 </body>
-
 </html>
