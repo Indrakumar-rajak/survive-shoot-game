@@ -2,9 +2,19 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
-<title><script src="https://www.gstatic.com/youtube/gaming/playables/v1/ytgame.js"></script></title>
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+>
+
+<title>60 Seconds - Energy Survival</title>
+
+<!-- =====================================================
+     YOUTUBE PLAYABLES SDK
+     MUST LOAD BEFORE GAME CODE
+====================================================== -->
+<script src="https://www.gstatic.com/youtube/gaming/playables/v1/ytgame.js"></script>
 
 <style>
 * {
@@ -25,6 +35,7 @@ body {
     background: #050816;
     color: white;
     font-family: Arial, sans-serif;
+
     display: flex;
     justify-content: center;
     align-items: center;
@@ -33,9 +44,12 @@ body {
 #gameWrap {
     width: min(100vw, 1000px);
     aspect-ratio: 1000 / 650;
+
     position: relative;
     overflow: hidden;
+
     background: #071126;
+
     border: 2px solid #183b6b;
     border-radius: 12px;
 }
@@ -48,6 +62,7 @@ canvas {
 
 #hud {
     position: absolute;
+
     top: 10px;
     left: 10px;
     right: 10px;
@@ -57,14 +72,18 @@ canvas {
     align-items: flex-start;
 
     z-index: 5;
+
     pointer-events: none;
 }
 
 .box {
     background: rgba(0, 10, 30, 0.82);
+
     border: 1px solid #28527e;
     border-radius: 8px;
+
     padding: 7px 10px;
+
     font-size: 13px;
     line-height: 1.45;
 }
@@ -98,25 +117,31 @@ canvas {
 
 #status {
     position: absolute;
+
     top: 92px;
     left: 50%;
 
     transform: translateX(-50%);
 
     color: #70e6ff;
+
     font-size: 15px;
     font-weight: bold;
 
     opacity: 0;
+
     transition: opacity 0.2s;
 
     z-index: 7;
+
     pointer-events: none;
+
     white-space: nowrap;
 }
 
 #controls {
     position: absolute;
+
     bottom: 12px;
     left: 12px;
     right: 12px;
@@ -125,6 +150,7 @@ canvas {
     justify-content: space-between;
 
     z-index: 6;
+
     pointer-events: none;
 }
 
@@ -133,15 +159,18 @@ canvas {
     height: 55px;
 
     border: 1px solid rgba(100, 190, 255, 0.5);
+
     background: rgba(5, 20, 45, 0.75);
 
     color: white;
+
     border-radius: 12px;
 
     font-size: 24px;
     font-weight: bold;
 
     pointer-events: auto;
+
     user-select: none;
     touch-action: none;
 }
@@ -150,13 +179,47 @@ canvas {
     transform: scale(0.94);
 }
 
+#pulseBtn {
+    position: absolute;
+
+    bottom: 12px;
+    left: 50%;
+
+    transform: translateX(-50%);
+
+    width: 120px;
+    height: 55px;
+
+    border: 1px solid rgba(100, 220, 255, 0.8);
+
+    background: rgba(15, 100, 160, 0.85);
+
+    color: white;
+
+    border-radius: 12px;
+
+    font-size: 15px;
+    font-weight: bold;
+
+    z-index: 8;
+
+    user-select: none;
+    touch-action: none;
+}
+
+#pulseBtn:active {
+    transform: translateX(-50%) scale(0.94);
+}
+
 #overlay {
     position: absolute;
+
     inset: 0;
 
     background: rgba(1, 5, 18, 0.86);
 
     display: flex;
+
     justify-content: center;
     align-items: center;
 
@@ -171,7 +234,9 @@ canvas {
     padding: 25px;
 
     background: rgba(5, 16, 38, 0.97);
+
     border: 1px solid #2d6da5;
+
     border-radius: 15px;
 
     box-shadow: 0 0 35px rgba(40, 150, 255, 0.15);
@@ -179,24 +244,31 @@ canvas {
 
 .panel h1 {
     font-size: 30px;
+
     margin-bottom: 12px;
+
     color: #67dfff;
 }
 
 .panel p {
     color: #b9cce0;
+
     font-size: 14px;
+
     line-height: 1.6;
+
     margin-bottom: 20px;
 }
 
 #startBtn {
     border: none;
+
     border-radius: 9px;
 
     padding: 12px 26px;
 
     background: #1688d8;
+
     color: white;
 
     font-size: 16px;
@@ -213,12 +285,15 @@ canvas {
 
     #gameWrap {
         width: 100vw;
+
         border-radius: 0;
+
         border-width: 1px;
     }
 
     .box {
         padding: 5px 7px;
+
         font-size: 10px;
     }
 
@@ -235,6 +310,12 @@ canvas {
         height: 48px;
     }
 
+    #pulseBtn {
+        width: 105px;
+        height: 48px;
+        font-size: 13px;
+    }
+
     .panel h1 {
         font-size: 24px;
     }
@@ -246,49 +327,104 @@ canvas {
 
 <div id="gameWrap">
 
-    <canvas id="game" width="1000" height="650"></canvas>
+    <canvas
+        id="game"
+        width="1000"
+        height="650"
+    ></canvas>
 
     <!-- HUD -->
     <div id="hud">
 
         <div class="box">
-            SCORE: <b id="score">0</b><br>
-            BEST: <b id="best">0</b>
+            SCORE:
+            <b id="score">0</b>
+            <br>
+
+            BEST:
+            <b id="best">0</b>
         </div>
 
-        <div class="box" style="text-align:center;">
+        <div
+            class="box"
+            style="text-align:center;"
+        >
             <div id="timer">60</div>
-            <div id="combo">COMBO x0</div>
+
+            <div id="combo">
+                COMBO x0
+            </div>
         </div>
 
-        <div class="box" style="text-align:right;">
-            <div id="lives">❤️ ❤️ ❤️</div>
-            <div id="power">POWER: 1 BULLET</div>
-            <div id="shieldText">SHIELD: OFF</div>
+        <div
+            class="box"
+            style="text-align:right;"
+        >
+
+            <div id="lives">
+                ❤️ ❤️ ❤️
+            </div>
+
+            <div id="power">
+                ENERGY: 1
+            </div>
+
+            <div id="shieldText">
+                SHIELD: OFF
+            </div>
+
         </div>
 
     </div>
 
     <div id="status"></div>
 
-    <!-- Mobile Controls -->
+    <!-- MOBILE MOVEMENT -->
     <div id="controls">
-        <button class="control" id="leftBtn">◀</button>
-        <button class="control" id="rightBtn">▶</button>
+
+        <button
+            class="control"
+            id="leftBtn"
+            aria-label="Move left"
+        >
+            ◀
+        </button>
+
+        <button
+            class="control"
+            id="rightBtn"
+            aria-label="Move right"
+        >
+            ▶
+        </button>
+
     </div>
 
-    <!-- Start / Game Over -->
+    <!-- ENERGY PULSE -->
+    <button
+        id="pulseBtn"
+        aria-label="Energy pulse"
+    >
+        ⚡ PULSE
+    </button>
+
+    <!-- START / GAME OVER -->
     <div id="overlay">
 
         <div class="panel">
 
-            <h1 id="title">60 SECONDS</h1>
+            <h1 id="title">
+                60 SECONDS
+            </h1>
 
             <p id="message">
-                Numbered red hurdles ko shoot karo.<br>
-                Number jitna hoga, utne hits lagenge.<br><br>
+                Numbered energy obstacles ko
+                pulse se break karo.<br>
 
-                🔵 Blue Power = Extra Bullets<br>
+                Number jitna hoga,
+                utne pulses lagenge.<br><br>
+
+                🔵 Energy Core = Stronger Pulse<br>
                 🛡️ Shield = Temporary Protection<br>
                 ❤️ 3 Lives Available
             </p>
@@ -305,125 +441,252 @@ canvas {
 
 <script>
 
-/* =========================================================
-   GAME SETUP
-========================================================= */
-/* =========================================================
-   YOUTUBE PLAYABLES SDK
-========================================================= */
+/* =====================================================
+   PLAYABLES STATE
+===================================================== */
 
 let ytPaused = false;
 
-function notifyPlayablesReady() {
-    if (
-        typeof ytgame !== "undefined" &&
-        ytgame.game
-    ) {
-        try {
-            ytgame.game.firstFrameReady();
-            ytgame.game.gameReady();
-        } catch (error) {
-            console.log("Playables SDK:", error);
-        }
-    }
-}
+
+/* =====================================================
+   PLAYABLES SDK SETUP
+===================================================== */
 
 function setupPlayables() {
 
     if (
-        typeof ytgame === "undefined" ||
+        typeof ytgame === "undefined"
+    ) {
+        return;
+    }
+
+    if (
         !ytgame.system
     ) {
         return;
     }
 
-    ytgame.system.onPause(() => {
-        ytPaused = true;
-    });
+    if (
+        typeof ytgame.system.onPause === "function"
+    ) {
 
-    ytgame.system.onResume(() => {
-        ytPaused = false;
-        lastTime = performance.now();
-    });
+        ytgame.system.onPause(
+            function() {
+
+                ytPaused = true;
+
+            }
+        );
+
+    }
+
+    if (
+        typeof ytgame.system.onResume === "function"
+    ) {
+
+        ytgame.system.onResume(
+            function() {
+
+                ytPaused = false;
+
+                lastTime =
+                    performance.now();
+
+            }
+        );
+
+    }
 }
 
+
+/* =====================================================
+   PLAYABLES READY NOTIFICATION
+===================================================== */
+
+let playablesReadySent = false;
+
+function notifyPlayablesReady() {
+
+    if (
+        playablesReadySent
+    ) {
+        return;
+    }
+
+    if (
+        typeof ytgame === "undefined"
+    ) {
+        return;
+    }
+
+    if (
+        !ytgame.game
+    ) {
+        return;
+    }
+
+    try {
+
+        if (
+            typeof ytgame.game.firstFrameReady ===
+            "function"
+        ) {
+
+            ytgame.game.firstFrameReady();
+
+        }
+
+        if (
+            typeof ytgame.game.gameReady ===
+            "function"
+        ) {
+
+            ytgame.game.gameReady();
+
+        }
+
+        playablesReadySent = true;
+
+    } catch (error) {
+
+        console.log(
+            "Playables SDK:",
+            error
+        );
+
+    }
+}
+
+
+/* =====================================================
+   CANVAS
+===================================================== */
+
+const canvas =
+    document.getElementById("game");
+
+const ctx =
+    canvas.getContext("2d");
+
+const W =
+    canvas.width;
+
+const H =
+    canvas.height;
+
+
+/* =====================================================
+   SETUP SDK
+===================================================== */
+
 setupPlayables();
-    
-const canvas = document.getElementById("game");
-const ctx = canvas.getContext("2d");
-
-const W = canvas.width;
-const H = canvas.height;
 
 
-/* =========================================================
-   HUD ELEMENTS
-========================================================= */
+/* =====================================================
+   HUD
+===================================================== */
 
-const scoreEl = document.getElementById("score");
-const bestEl = document.getElementById("best");
-const timerEl = document.getElementById("timer");
-const livesEl = document.getElementById("lives");
-const powerEl = document.getElementById("power");
-const comboEl = document.getElementById("combo");
-const shieldText = document.getElementById("shieldText");
+const scoreEl =
+    document.getElementById("score");
 
-const overlay = document.getElementById("overlay");
-const title = document.getElementById("title");
-const message = document.getElementById("message");
-const startBtn = document.getElementById("startBtn");
-const statusEl = document.getElementById("status");
+const bestEl =
+    document.getElementById("best");
+
+const timerEl =
+    document.getElementById("timer");
+
+const livesEl =
+    document.getElementById("lives");
+
+const powerEl =
+    document.getElementById("power");
+
+const comboEl =
+    document.getElementById("combo");
+
+const shieldText =
+    document.getElementById("shieldText");
+
+const overlay =
+    document.getElementById("overlay");
+
+const title =
+    document.getElementById("title");
+
+const message =
+    document.getElementById("message");
+
+const startBtn =
+    document.getElementById("startBtn");
+
+const statusEl =
+    document.getElementById("status");
+
+const pulseBtn =
+    document.getElementById("pulseBtn");
 
 
-/* =========================================================
+/* =====================================================
    GAME VARIABLES
-========================================================= */
+===================================================== */
 
 let gameRunning = false;
 
 let score = 0;
+
 let timeLeft = 60;
+
 let lives = 3;
 
-let best = Number(
-    localStorage.getItem("surviveShootBest") || 0
-);
+let best =
+    Number(
+        localStorage.getItem(
+            "energySurvivalBest"
+        ) || 0
+    );
 
-let bulletsPower = 1;
-let powerTime = 0;
+let energyLevel = 1;
+
+let energyTimer = 0;
 
 let shieldTime = 0;
 
 let combo = 0;
+
 let comboTimer = 0;
 
 let spawnTimer = 0;
-let shootTimer = 0;
+
+let pulseCooldown = 0;
 
 let lastTime = 0;
 
 
-/* =========================================================
+/* =====================================================
    ARRAYS
-========================================================= */
+===================================================== */
 
 let obstacles = [];
-let bullets = [];
-let powers = [];
+
+let energyOrbs = [];
+
 let particles = [];
 
+let pulseWaves = [];
 
-/* =========================================================
+
+/* =====================================================
    CONTROLS
-========================================================= */
+===================================================== */
 
 let leftPressed = false;
+
 let rightPressed = false;
 
 
-/* =========================================================
+/* =====================================================
    PLAYER
-========================================================= */
+===================================================== */
 
 const player = {
 
@@ -436,80 +699,117 @@ const player = {
     h: 42,
 
     speed: 470
+
 };
 
 
-/* =========================================================
+/* =====================================================
    INITIAL HUD
-========================================================= */
+===================================================== */
 
-bestEl.textContent = best;
+bestEl.textContent =
+    best;
 
 
-/* =========================================================
+/* =====================================================
    KEYBOARD
-========================================================= */
+===================================================== */
 
-document.addEventListener("keydown", function(e) {
+document.addEventListener(
+    "keydown",
+    function(e) {
 
-    if (
-        e.key === "ArrowLeft" ||
-        e.key.toLowerCase() === "a"
-    ) {
-        leftPressed = true;
+        if (
+            e.key === "ArrowLeft" ||
+            e.key.toLowerCase() === "a"
+        ) {
+
+            leftPressed = true;
+
+        }
+
+        if (
+            e.key === "ArrowRight" ||
+            e.key.toLowerCase() === "d"
+        ) {
+
+            rightPressed = true;
+
+        }
+
+        if (
+            e.code === "Space"
+        ) {
+
+            if (
+                !gameRunning
+            ) {
+
+                startGame();
+
+            } else {
+
+                useEnergyPulse();
+
+            }
+
+        }
+
     }
+);
 
-    if (
-        e.key === "ArrowRight" ||
-        e.key.toLowerCase() === "d"
-    ) {
-        rightPressed = true;
+
+document.addEventListener(
+    "keyup",
+    function(e) {
+
+        if (
+            e.key === "ArrowLeft" ||
+            e.key.toLowerCase() === "a"
+        ) {
+
+            leftPressed = false;
+
+        }
+
+        if (
+            e.key === "ArrowRight" ||
+            e.key.toLowerCase() === "d"
+        ) {
+
+            rightPressed = false;
+
+        }
+
     }
-
-    if (
-        e.code === "Space" &&
-        !gameRunning
-    ) {
-        startGame();
-    }
-});
+);
 
 
-document.addEventListener("keyup", function(e) {
+/* =====================================================
+   MOBILE BUTTON
+===================================================== */
 
-    if (
-        e.key === "ArrowLeft" ||
-        e.key.toLowerCase() === "a"
-    ) {
-        leftPressed = false;
-    }
-
-    if (
-        e.key === "ArrowRight" ||
-        e.key.toLowerCase() === "d"
-    ) {
-        rightPressed = false;
-    }
-});
-
-
-/* =========================================================
-   MOBILE CONTROLS
-========================================================= */
-
-function setupButton(button, direction) {
+function setupMoveButton(
+    button,
+    direction
+) {
 
     function press(e) {
 
         e.preventDefault();
 
-        if (direction === "left") {
+        if (
+            direction === "left"
+        ) {
+
             leftPressed = true;
+
+        } else {
+
+            rightPressed = true;
+
         }
 
-        if (direction === "right") {
-            rightPressed = true;
-        }
     }
 
 
@@ -517,65 +817,81 @@ function setupButton(button, direction) {
 
         e.preventDefault();
 
-        if (direction === "left") {
+        if (
+            direction === "left"
+        ) {
+
             leftPressed = false;
+
+        } else {
+
+            rightPressed = false;
+
         }
 
-        if (direction === "right") {
-            rightPressed = false;
-        }
     }
 
 
     button.addEventListener(
-        "touchstart",
-        press,
-        { passive: false }
-    );
-
-    button.addEventListener(
-        "touchend",
-        release,
-        { passive: false }
-    );
-
-    button.addEventListener(
-        "touchcancel",
-        release,
-        { passive: false }
-    );
-
-    button.addEventListener(
-        "mousedown",
+        "pointerdown",
         press
     );
 
     button.addEventListener(
-        "mouseup",
+        "pointerup",
         release
     );
 
     button.addEventListener(
-        "mouseleave",
+        "pointercancel",
         release
     );
+
+    button.addEventListener(
+        "pointerleave",
+        release
+    );
+
 }
 
 
-setupButton(
+setupMoveButton(
     document.getElementById("leftBtn"),
     "left"
 );
 
-setupButton(
+
+setupMoveButton(
     document.getElementById("rightBtn"),
     "right"
 );
 
 
-/* =========================================================
+/* =====================================================
+   PULSE BUTTON
+===================================================== */
+
+pulseBtn.addEventListener(
+    "pointerdown",
+    function(e) {
+
+        e.preventDefault();
+
+        if (
+            gameRunning
+        ) {
+
+            useEnergyPulse();
+
+        }
+
+    }
+);
+
+
+/* =====================================================
    START BUTTON
-========================================================= */
+===================================================== */
 
 startBtn.addEventListener(
     "click",
@@ -583,9 +899,9 @@ startBtn.addEventListener(
 );
 
 
-/* =========================================================
+/* =====================================================
    START GAME
-========================================================= */
+===================================================== */
 
 function startGame() {
 
@@ -595,9 +911,9 @@ function startGame() {
 
     lives = 3;
 
-    bulletsPower = 1;
+    energyLevel = 1;
 
-    powerTime = 0;
+    energyTimer = 0;
 
     shieldTime = 0;
 
@@ -607,187 +923,251 @@ function startGame() {
 
     spawnTimer = 0.3;
 
-    shootTimer = 0.2;
+    pulseCooldown = 0;
 
     obstacles = [];
 
-    bullets = [];
-
-    powers = [];
+    energyOrbs = [];
 
     particles = [];
 
-    player.x = W / 2;
+    pulseWaves = [];
+
+    player.x =
+        W / 2;
 
     gameRunning = true;
 
-    overlay.style.display = "none";
+    overlay.style.display =
+        "none";
 
     updateHUD();
 
-    lastTime = performance.now();
+    lastTime =
+        performance.now();
 
-    requestAnimationFrame(gameLoop);
+    requestAnimationFrame(
+        gameLoop
+    );
 }
 
 
-/* =========================================================
+/* =====================================================
    GAME LOOP
-========================================================= */
+===================================================== */
 
 function gameLoop(now) {
 
-    if (!gameRunning) {
+    if (
+        !gameRunning
+    ) {
+
         return;
+
     }
 
-    if (ytPaused) {
+
+    if (
+        ytPaused
+    ) {
+
         lastTime = now;
-        requestAnimationFrame(gameLoop);
+
+        requestAnimationFrame(
+            gameLoop
+        );
+
         return;
+
     }
 
-    let dt = (now - lastTime) / 1000;
 
-    lastTime = now;
+    let dt =
+        (now - lastTime) /
+        1000;
 
-    if (dt > 0.035) {
+
+    lastTime =
+        now;
+
+
+    if (
+        dt > 0.035
+    ) {
+
         dt = 0.035;
+
     }
+
 
     update(dt);
+
     draw();
 
-    requestAnimationFrame(gameLoop);
+
+    requestAnimationFrame(
+        gameLoop
+    );
 }
 
 
-/* =========================================================
+/* =====================================================
    UPDATE
-========================================================= */
+===================================================== */
 
 function update(dt) {
 
     timeLeft -= dt;
 
-    if (timeLeft <= 0) {
+
+    if (
+        timeLeft <= 0
+    ) {
 
         timeLeft = 0;
 
         winGame();
 
         return;
+
     }
 
 
-    /* PLAYER MOVEMENT */
+    /* PLAYER */
 
-    if (leftPressed) {
+    if (
+        leftPressed
+    ) {
 
         player.x -=
             player.speed * dt;
+
     }
 
 
-    if (rightPressed) {
+    if (
+        rightPressed
+    ) {
 
         player.x +=
             player.speed * dt;
+
     }
 
 
-    player.x = Math.max(
-        player.w,
-        Math.min(
-            W - player.w,
-            player.x
-        )
-    );
+    player.x =
+        Math.max(
+            player.w,
+            Math.min(
+                W - player.w,
+                player.x
+            )
+        );
 
 
-    /* POWER TIMER */
+    /* ENERGY */
 
-    if (powerTime > 0) {
+    if (
+        energyTimer > 0
+    ) {
 
-        powerTime -= dt;
+        energyTimer -= dt;
 
-        if (powerTime <= 0) {
 
-            powerTime = 0;
+        if (
+            energyTimer <= 0
+        ) {
 
-            bulletsPower = 1;
+            energyTimer = 0;
+
+            energyLevel = 1;
 
             showStatus(
-                "POWER OVER"
+                "ENERGY NORMAL"
             );
+
         }
+
     }
 
 
-    /* SHIELD TIMER */
+    /* SHIELD */
 
-    if (shieldTime > 0) {
+    if (
+        shieldTime > 0
+    ) {
 
         shieldTime -= dt;
 
-        if (shieldTime < 0) {
+
+        if (
+            shieldTime < 0
+        ) {
+
             shieldTime = 0;
+
         }
+
     }
 
 
-    /* COMBO TIMER */
+    /* COMBO */
 
-    if (comboTimer > 0) {
+    if (
+        comboTimer > 0
+    ) {
 
         comboTimer -= dt;
 
-        if (comboTimer <= 0) {
+
+        if (
+            comboTimer <= 0
+        ) {
 
             comboTimer = 0;
 
             combo = 0;
+
         }
+
     }
 
 
-    /* SHOOTING */
+    /* PULSE COOLDOWN */
 
-    shootTimer -= dt;
+    if (
+        pulseCooldown > 0
+    ) {
 
-    if (shootTimer <= 0) {
+        pulseCooldown -= dt;
 
-        shoot();
 
-        if (bulletsPower >= 4) {
+        if (
+            pulseCooldown < 0
+        ) {
 
-            shootTimer = 0.23;
+            pulseCooldown = 0;
 
-        } else if (bulletsPower === 3) {
-
-            shootTimer = 0.27;
-
-        } else if (bulletsPower === 2) {
-
-            shootTimer = 0.30;
-
-        } else {
-
-            shootTimer = 0.34;
         }
+
     }
 
 
-    /* OBSTACLE SPAWN */
+    /* SPAWN */
 
     spawnTimer -= dt;
 
-    if (spawnTimer <= 0) {
+
+    if (
+        spawnTimer <= 0
+    ) {
 
         spawnObstacle();
 
+
         const elapsed =
             60 - timeLeft;
+
 
         const difficulty =
             Math.min(
@@ -795,107 +1175,158 @@ function update(dt) {
                 elapsed * 0.006
             );
 
+
         spawnTimer =
             Math.max(
                 0.25,
                 0.72 - difficulty
             );
+
     }
 
-
-    /* OBJECT UPDATES */
-
-    updateBullets(dt);
 
     updateObstacles(dt);
 
-    updatePowers(dt);
+    updateEnergyOrbs(dt);
 
     updateParticles(dt);
 
+    updatePulseWaves(dt);
 
-    /* COLLISIONS */
-
-    checkPowerCollision();
+    checkOrbCollision();
 
     checkObstacleCollision();
 
-
     updateHUD();
+
 }
 
 
-/* =========================================================
-   SHOOT
-========================================================= */
+/* =====================================================
+   ENERGY PULSE
+===================================================== */
 
-function shoot() {
+function useEnergyPulse() {
 
-    if (bulletsPower === 1) {
-
-        bullets.push({
-
-            x: player.x,
-
-            y: player.y - 22,
-
-            vx: 0,
-
-            vy: -720
-        });
-
-        return;
-    }
-
-
-    let spread;
-
-    if (bulletsPower === 2) {
-
-        spread = 70;
-
-    } else if (bulletsPower === 3) {
-
-        spread = 90;
-
-    } else {
-
-        spread = 105;
-    }
-
-
-    const count = bulletsPower;
-
-    for (
-        let i = 0;
-        i < count;
-        i++
+    if (
+        !gameRunning
     ) {
 
-        const center =
-            (count - 1) / 2;
+        return;
 
-        const vx =
-            (i - center) * spread;
-
-
-        bullets.push({
-
-            x: player.x,
-
-            y: player.y - 22,
-
-            vx: vx,
-
-            vy: -720
-        });
     }
+
+
+    if (
+        pulseCooldown > 0
+    ) {
+
+        return;
+
+    }
+
+
+    pulseCooldown = 0.28;
+
+
+    pulseWaves.push({
+
+        x: player.x,
+
+        y: player.y,
+
+        radius: 20,
+
+        maxRadius:
+            145 +
+            energyLevel * 22,
+
+        life: 0.32
+
+    });
+
+
+    let destroyed = 0;
+
+
+    for (
+        let i =
+            obstacles.length - 1;
+
+        i >= 0;
+
+        i--
+    ) {
+
+        const o =
+            obstacles[i];
+
+
+        const dx =
+            o.x - player.x;
+
+        const dy =
+            o.y - player.y;
+
+
+        const distance =
+            Math.sqrt(
+                dx * dx +
+                dy * dy
+            );
+
+
+        const range =
+            145 +
+            energyLevel * 22;
+
+
+        if (
+            distance <= range
+        ) {
+
+            o.hits -=
+                energyLevel;
+
+
+            createParticles(
+                o.x,
+                o.y,
+                7
+            );
+
+
+            if (
+                o.hits <= 0
+            ) {
+
+                destroyObstacle(i);
+
+                destroyed++;
+
+            }
+
+        }
+
+    }
+
+
+    if (
+        destroyed === 0
+    ) {
+
+        showStatus(
+            "ENERGY PULSE!"
+        );
+
+    }
+
 }
 
 
-/* =========================================================
+/* =====================================================
    SPAWN OBSTACLE
-========================================================= */
+===================================================== */
 
 function spawnObstacle() {
 
@@ -940,39 +1371,50 @@ function spawnObstacle() {
             -size,
 
         size:
+
             size,
 
         hits:
+
             hits,
 
         maxHits:
+
             hits,
 
         speed:
+
             145 +
             Math.random() * 70 +
             difficulty * 35,
 
         rotation:
-            Math.random() * Math.PI
+
+            Math.random() *
+            Math.PI
+
     });
+
 }
 
 
-/* =========================================================
+/* =====================================================
    UPDATE OBSTACLES
-   THIS WAS THE MISSING FUNCTION
-========================================================= */
+===================================================== */
 
 function updateObstacles(dt) {
 
     for (
-        let i = obstacles.length - 1;
+        let i =
+            obstacles.length - 1;
+
         i >= 0;
+
         i--
     ) {
 
-        const o = obstacles[i];
+        const o =
+            obstacles[i];
 
 
         o.y +=
@@ -983,136 +1425,30 @@ function updateObstacles(dt) {
             0.5 * dt;
 
 
-        /* Remove if it completely leaves screen */
-
         if (
             o.y >
             H + o.size
         ) {
 
-            obstacles.splice(i, 1);
+            obstacles.splice(
+                i,
+                1
+            );
 
             combo = 0;
 
             comboTimer = 0;
+
         }
+
     }
+
 }
 
 
-/* =========================================================
-   UPDATE BULLETS
-========================================================= */
-
-function updateBullets(dt) {
-
-    for (
-        let i = bullets.length - 1;
-        i >= 0;
-        i--
-    ) {
-
-        const b = bullets[i];
-
-
-        b.x +=
-            b.vx * dt;
-
-        b.y +=
-            b.vy * dt;
-
-
-        let hitSomething = false;
-
-
-        /* Bullet vs obstacle */
-
-        for (
-            let j = obstacles.length - 1;
-            j >= 0;
-            j--
-        ) {
-
-            const o = obstacles[j];
-
-
-            const dx =
-                b.x - o.x;
-
-            const dy =
-                b.y - o.y;
-
-
-            const distance =
-                Math.sqrt(
-                    dx * dx +
-                    dy * dy
-                );
-
-
-            if (
-                distance <
-                o.size
-            ) {
-
-                o.hits--;
-
-
-                createParticles(
-                    b.x,
-                    b.y,
-                    5
-                );
-
-
-                bullets.splice(i, 1);
-
-                hitSomething = true;
-
-
-                if (
-                    o.hits <= 0
-                ) {
-
-                    destroyObstacle(j);
-
-                } else {
-
-                    showStatus(
-                        "HIT! " +
-                        o.hits +
-                        " LEFT"
-                    );
-                }
-
-
-                break;
-            }
-        }
-
-
-        if (hitSomething) {
-            continue;
-        }
-
-
-        /* Remove bullet */
-
-        if (
-            b.y < -40 ||
-            b.x < -60 ||
-            b.x > W + 60
-        ) {
-
-            bullets.splice(i, 1);
-        }
-    }
-}
-
-
-/* =========================================================
+/* =====================================================
    DESTROY OBSTACLE
-========================================================= */
+===================================================== */
 
 function destroyObstacle(index) {
 
@@ -1128,10 +1464,13 @@ function destroyObstacle(index) {
     comboTimer = 2.5;
 
 
-    if (combo >= 3) {
+    if (
+        combo >= 3
+    ) {
 
         bonus +=
             combo * 20;
+
     }
 
 
@@ -1145,13 +1484,11 @@ function destroyObstacle(index) {
     );
 
 
-    /* Chance of power */
-
     if (
         Math.random() < 0.18
     ) {
 
-        powers.push({
+        energyOrbs.push({
 
             x: o.x,
 
@@ -1163,9 +1500,11 @@ function destroyObstacle(index) {
 
             type:
                 Math.random() < 0.72
-                ? "bullet"
+                ? "energy"
                 : "shield"
+
         });
+
     }
 
 
@@ -1175,31 +1514,39 @@ function destroyObstacle(index) {
     );
 
 
-    if (combo >= 3) {
+    if (
+        combo >= 3
+    ) {
 
         showStatus(
             "COMBO x" +
             combo +
-            "  +" +
+            " +" +
             bonus
         );
+
     }
+
 }
 
 
-/* =========================================================
-   UPDATE POWERS
-========================================================= */
+/* =====================================================
+   UPDATE ENERGY ORBS
+===================================================== */
 
-function updatePowers(dt) {
+function updateEnergyOrbs(dt) {
 
     for (
-        let i = powers.length - 1;
+        let i =
+            energyOrbs.length - 1;
+
         i >= 0;
+
         i--
     ) {
 
-        const p = powers[i];
+        const p =
+            energyOrbs[i];
 
 
         p.y +=
@@ -1211,26 +1558,35 @@ function updatePowers(dt) {
             H + 30
         ) {
 
-            powers.splice(i, 1);
+            energyOrbs.splice(
+                i,
+                1
+            );
+
         }
+
     }
+
 }
 
 
-/* =========================================================
-   POWER COLLISION
-========================================================= */
+/* =====================================================
+   ORB COLLISION
+===================================================== */
 
-function checkPowerCollision() {
+function checkOrbCollision() {
 
     for (
-        let i = powers.length - 1;
+        let i =
+            energyOrbs.length - 1;
+
         i >= 0;
+
         i--
     ) {
 
         const p =
-            powers[i];
+            energyOrbs[i];
 
 
         const dx =
@@ -1252,23 +1608,22 @@ function checkPowerCollision() {
         ) {
 
             if (
-                p.type === "bullet"
+                p.type === "energy"
             ) {
 
-                bulletsPower =
+                energyLevel =
                     Math.min(
                         4,
-                        bulletsPower + 1
+                        energyLevel + 1
                     );
 
 
-                powerTime = 10;
+                energyTimer = 10;
 
 
                 showStatus(
-                    "⚡ POWER " +
-                    bulletsPower +
-                    " BULLETS"
+                    "⚡ ENERGY " +
+                    energyLevel
                 );
 
             } else {
@@ -1279,6 +1634,7 @@ function checkPowerCollision() {
                 showStatus(
                     "🛡️ SHIELD ACTIVE"
                 );
+
             }
 
 
@@ -1289,21 +1645,30 @@ function checkPowerCollision() {
             );
 
 
-            powers.splice(i, 1);
+            energyOrbs.splice(
+                i,
+                1
+            );
+
         }
+
     }
+
 }
 
 
-/* =========================================================
+/* =====================================================
    OBSTACLE COLLISION
-========================================================= */
+===================================================== */
 
 function checkObstacleCollision() {
 
     for (
-        let i = obstacles.length - 1;
+        let i =
+            obstacles.length - 1;
+
         i >= 0;
+
         i--
     ) {
 
@@ -1329,8 +1694,6 @@ function checkObstacleCollision() {
             distance <
             o.size + 22
         ) {
-
-            /* Shield */
 
             if (
                 shieldTime > 0
@@ -1359,15 +1722,19 @@ function checkObstacleCollision() {
             } else {
 
                 loseLife(i);
+
             }
+
         }
+
     }
+
 }
 
 
-/* =========================================================
+/* =====================================================
    LOSE LIFE
-========================================================= */
+===================================================== */
 
 function loseLife(index) {
 
@@ -1392,7 +1759,9 @@ function loseLife(index) {
     );
 
 
-    if (lives <= 0) {
+    if (
+        lives <= 0
+    ) {
 
         endGame();
 
@@ -1401,13 +1770,15 @@ function loseLife(index) {
         showStatus(
             "⚠️ LIFE LOST"
         );
+
     }
+
 }
 
 
-/* =========================================================
+/* =====================================================
    PARTICLES
-========================================================= */
+===================================================== */
 
 function createParticles(
     x,
@@ -1417,7 +1788,9 @@ function createParticles(
 
     for (
         let i = 0;
+
         i < count;
+
         i++
     ) {
 
@@ -1452,20 +1825,26 @@ function createParticles(
 
             maxLife:
                 0.8
+
         });
+
     }
+
 }
 
 
-/* =========================================================
+/* =====================================================
    UPDATE PARTICLES
-========================================================= */
+===================================================== */
 
 function updateParticles(dt) {
 
     for (
-        let i = particles.length - 1;
+        let i =
+            particles.length - 1;
+
         i >= 0;
+
         i--
     ) {
 
@@ -1491,14 +1870,62 @@ function updateParticles(dt) {
                 i,
                 1
             );
+
         }
+
     }
+
 }
 
 
-/* =========================================================
+/* =====================================================
+   PULSE WAVES
+===================================================== */
+
+function updatePulseWaves(dt) {
+
+    for (
+        let i =
+            pulseWaves.length - 1;
+
+        i >= 0;
+
+        i--
+    ) {
+
+        const wave =
+            pulseWaves[i];
+
+
+        wave.radius +=
+            (
+                wave.maxRadius -
+                wave.radius
+            ) * 12 * dt;
+
+
+        wave.life -= dt;
+
+
+        if (
+            wave.life <= 0
+        ) {
+
+            pulseWaves.splice(
+                i,
+                1
+            );
+
+        }
+
+    }
+
+}
+
+
+/* =====================================================
    DRAW
-========================================================= */
+===================================================== */
 
 function draw() {
 
@@ -1512,21 +1939,22 @@ function draw() {
 
     drawBackground();
 
-    drawPowers();
+    drawEnergyOrbs();
 
     drawObstacles();
 
-    drawBullets();
+    drawPulseWaves();
 
     drawPlayer();
 
     drawParticles();
+
 }
 
 
-/* =========================================================
+/* =====================================================
    BACKGROUND
-========================================================= */
+===================================================== */
 
 function drawBackground() {
 
@@ -1544,6 +1972,7 @@ function drawBackground() {
         "#050a20"
     );
 
+
     gradient.addColorStop(
         1,
         "#091a32"
@@ -1553,6 +1982,7 @@ function drawBackground() {
     ctx.fillStyle =
         gradient;
 
+
     ctx.fillRect(
         0,
         0,
@@ -1561,19 +1991,22 @@ function drawBackground() {
     );
 
 
-    /* Stars */
-
     ctx.fillStyle =
         "rgba(130,210,255,0.5)";
 
 
     const starMove =
-        (performance.now() / 35) % H;
+        (
+            performance.now() /
+            35
+        ) % H;
 
 
     for (
         let i = 0;
+
         i < 80;
+
         i++
     ) {
 
@@ -1594,20 +2027,22 @@ function drawBackground() {
             2,
             2
         );
+
     }
 
 
-    /* Grid */
-
     ctx.strokeStyle =
         "rgba(50,150,220,0.12)";
+
 
     ctx.lineWidth = 1;
 
 
     for (
         let x = 0;
+
         x < W;
+
         x += 50
     ) {
 
@@ -1624,12 +2059,15 @@ function drawBackground() {
         );
 
         ctx.stroke();
+
     }
 
 
     for (
         let y = 0;
+
         y < H;
+
         y += 50
     ) {
 
@@ -1646,13 +2084,15 @@ function drawBackground() {
         );
 
         ctx.stroke();
+
     }
+
 }
 
 
-/* =========================================================
+/* =====================================================
    DRAW PLAYER
-========================================================= */
+===================================================== */
 
 function drawPlayer() {
 
@@ -1664,8 +2104,6 @@ function drawPlayer() {
         player.y
     );
 
-
-    /* Shield */
 
     if (
         shieldTime > 0
@@ -1685,41 +2123,47 @@ function drawPlayer() {
         ctx.fillStyle =
             "rgba(60,210,255,0.08)";
 
+
         ctx.fill();
 
 
         ctx.strokeStyle =
             "rgba(80,220,255,0.95)";
 
+
         ctx.lineWidth = 3;
 
         ctx.stroke();
+
     }
 
 
-    /* Ship */
-
     ctx.beginPath();
+
 
     ctx.moveTo(
         0,
         -24
     );
 
+
     ctx.lineTo(
         -19,
         20
     );
+
 
     ctx.lineTo(
         0,
         12
     );
 
+
     ctx.lineTo(
         19,
         20
     );
+
 
     ctx.closePath();
 
@@ -1727,25 +2171,28 @@ function drawPlayer() {
     ctx.fillStyle =
         "#58d9ff";
 
+
     ctx.fill();
 
 
     ctx.strokeStyle =
         "#d5f7ff";
 
+
     ctx.lineWidth = 2;
+
 
     ctx.stroke();
 
 
-    /* Engine */
-
     ctx.beginPath();
+
 
     ctx.moveTo(
         -7,
         17
     );
+
 
     ctx.lineTo(
         0,
@@ -1753,10 +2200,12 @@ function drawPlayer() {
         Math.random() * 7
     );
 
+
     ctx.lineTo(
         7,
         17
     );
+
 
     ctx.closePath();
 
@@ -1764,52 +2213,67 @@ function drawPlayer() {
     ctx.fillStyle =
         "#65bfff";
 
+
     ctx.fill();
 
 
     ctx.restore();
+
 }
 
 
-/* =========================================================
-   DRAW BULLETS
-========================================================= */
+/* =====================================================
+   DRAW PULSE WAVES
+===================================================== */
 
-function drawBullets() {
+function drawPulseWaves() {
 
     for (
-        const b of bullets
+        const wave of pulseWaves
     ) {
+
+        ctx.save();
+
+
+        ctx.globalAlpha =
+            Math.max(
+                0,
+                wave.life / 0.32
+            );
+
 
         ctx.beginPath();
 
 
-        ctx.moveTo(
-            b.x,
-            b.y
-        );
-
-
-        ctx.lineTo(
-            b.x -
-            b.vx * 0.018,
-            b.y + 14
+        ctx.arc(
+            wave.x,
+            wave.y,
+            wave.radius,
+            0,
+            Math.PI * 2
         );
 
 
         ctx.strokeStyle =
-            "#b8f4ff";
+            "#66eaff";
 
-        ctx.lineWidth = 4;
+
+        ctx.lineWidth = 5;
+
 
         ctx.stroke();
+
+
+        ctx.restore();
+
     }
+
 }
 
 
-/* =========================================================
+/* =====================================================
    DRAW OBSTACLES
-========================================================= */
+===================================================== */
 
 function drawObstacles() {
 
@@ -1830,8 +2294,6 @@ function drawObstacles() {
             o.rotation
         );
 
-
-        /* Red obstacle */
 
         ctx.fillStyle =
             "#d82d4b";
@@ -1855,12 +2317,12 @@ function drawObstacles() {
         ctx.strokeStyle =
             "#ff6a7d";
 
+
         ctx.lineWidth = 2;
+
 
         ctx.stroke();
 
-
-        /* Number */
 
         ctx.rotate(
             -o.rotation
@@ -1882,6 +2344,7 @@ function drawObstacles() {
         ctx.textAlign =
             "center";
 
+
         ctx.textBaseline =
             "middle";
 
@@ -1894,18 +2357,20 @@ function drawObstacles() {
 
 
         ctx.restore();
+
     }
+
 }
 
 
-/* =========================================================
-   DRAW POWERS
-========================================================= */
+/* =====================================================
+   DRAW ENERGY ORBS
+===================================================== */
 
-function drawPowers() {
+function drawEnergyOrbs() {
 
     for (
-        const p of powers
+        const p of energyOrbs
     ) {
 
         ctx.save();
@@ -1917,9 +2382,8 @@ function drawPowers() {
         );
 
 
-        /* Glow */
-
         ctx.beginPath();
+
 
         ctx.arc(
             0,
@@ -1931,16 +2395,16 @@ function drawPowers() {
 
 
         ctx.fillStyle =
-            p.type === "bullet"
+            p.type === "energy"
             ? "rgba(20,160,240,0.22)"
             : "rgba(80,230,255,0.25)";
+
 
         ctx.fill();
 
 
-        /* Orb */
-
         ctx.beginPath();
+
 
         ctx.arc(
             0,
@@ -1952,9 +2416,10 @@ function drawPowers() {
 
 
         ctx.fillStyle =
-            p.type === "bullet"
+            p.type === "energy"
             ? "#159fe8"
             : "#5fe5ff";
+
 
         ctx.fill();
 
@@ -1962,28 +2427,31 @@ function drawPowers() {
         ctx.strokeStyle =
             "#d8faff";
 
+
         ctx.lineWidth = 2;
+
 
         ctx.stroke();
 
 
-        /* Icon */
-
         ctx.fillStyle =
             "#ffffff";
+
 
         ctx.font =
             "bold 15px Arial";
 
+
         ctx.textAlign =
             "center";
+
 
         ctx.textBaseline =
             "middle";
 
 
         ctx.fillText(
-            p.type === "bullet"
+            p.type === "energy"
             ? "⚡"
             : "S",
             0,
@@ -1992,13 +2460,15 @@ function drawPowers() {
 
 
         ctx.restore();
+
     }
+
 }
 
 
-/* =========================================================
+/* =====================================================
    DRAW PARTICLES
-========================================================= */
+===================================================== */
 
 function drawParticles() {
 
@@ -2024,16 +2494,18 @@ function drawParticles() {
             3,
             3
         );
+
     }
 
 
     ctx.globalAlpha = 1;
+
 }
 
 
-/* =========================================================
-   UPDATE HUD
-========================================================= */
+/* =====================================================
+   HUD
+===================================================== */
 
 function updateHUD() {
 
@@ -2051,17 +2523,23 @@ function updateHUD() {
         );
 
 
-    if (lives === 3) {
+    if (
+        lives === 3
+    ) {
 
         livesEl.textContent =
             "❤️ ❤️ ❤️";
 
-    } else if (lives === 2) {
+    } else if (
+        lives === 2
+    ) {
 
         livesEl.textContent =
             "❤️ ❤️";
 
-    } else if (lives === 1) {
+    } else if (
+        lives === 1
+    ) {
 
         livesEl.textContent =
             "❤️";
@@ -2070,21 +2548,19 @@ function updateHUD() {
 
         livesEl.textContent =
             "💔";
+
     }
 
 
     powerEl.textContent =
-        "POWER: " +
-        bulletsPower +
+        "ENERGY: " +
+        energyLevel +
         (
-            bulletsPower === 1
-            ? " BULLET"
-            : " BULLETS"
-        ) +
-        (
-            powerTime > 0
+            energyTimer > 0
             ? " | " +
-              Math.ceil(powerTime) +
+              Math.ceil(
+                  energyTimer
+              ) +
               "s"
             : ""
         );
@@ -2110,13 +2586,15 @@ function updateHUD() {
 
         shieldText.textContent =
             "SHIELD: OFF";
+
     }
+
 }
 
 
-/* =========================================================
-   STATUS MESSAGE
-========================================================= */
+/* =====================================================
+   STATUS
+===================================================== */
 
 let statusTimeout = null;
 
@@ -2138,6 +2616,7 @@ function showStatus(text) {
         clearTimeout(
             statusTimeout
         );
+
     }
 
 
@@ -2151,12 +2630,13 @@ function showStatus(text) {
             },
             900
         );
+
 }
 
 
-/* =========================================================
+/* =====================================================
    GAME OVER
-========================================================= */
+===================================================== */
 
 function endGame() {
 
@@ -2171,9 +2651,10 @@ function endGame() {
 
 
         localStorage.setItem(
-            "surviveShootBest",
+            "energySurvivalBest",
             best
         );
+
     }
 
 
@@ -2202,12 +2683,13 @@ function endGame() {
 
 
     updateHUD();
+
 }
 
 
-/* =========================================================
-   WIN GAME
-========================================================= */
+/* =====================================================
+   WIN
+===================================================== */
 
 function winGame() {
 
@@ -2225,9 +2707,10 @@ function winGame() {
 
 
         localStorage.setItem(
-            "surviveShootBest",
+            "energySurvivalBest",
             best
         );
+
     }
 
 
@@ -2254,16 +2737,23 @@ function winGame() {
 
 
     updateHUD();
+
 }
 
 
-/* =========================================================
-   FIRST SCREEN
-========================================================= */
+/* =====================================================
+   INITIAL FRAME
+===================================================== */
 
 draw();
 
-/* Tell YouTube that the first frame and main menu are ready */
+
+/*
+    IMPORTANT:
+    The first frame is now rendered and the main menu
+    is interactive, so notify Playables.
+*/
+
 notifyPlayablesReady();
 
 </script>
